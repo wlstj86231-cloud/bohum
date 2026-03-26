@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>메가푸른에셋 - 내 보험 바로 진단</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- CDN Libraries -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            background-color: #f8fafc;
+            background-image: url('https://images.unsplash.com/photo-1513002749550-c59d786b8e6c?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
+
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.4) 100%);
+            backdrop-filter: blur(2px);
+            z-index: -1;
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fade-in 0.8s ease-out forwards;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.1); border-radius: 10px; }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.05); }
+    </style>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Noto Sans KR', 'sans-serif'],
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useRef, useEffect, useMemo } = React;
+
+        // --- Inline Icons ---
+        const Icon = ({ name, size = 24, className = "" }) => {
+            const icons = {
+                Shield: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
+                BarChart3: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>,
+                TrendingDown: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>,
+                Search: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
+                ChevronRight: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="9 18 15 12 9 6"/></svg>,
+                X: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            };
+            return icons[name] || null;
+        };
+
+        // --- Constants ---
+        const SITE_INFO = {
+            name: '메가주식회사',
+            title: '내 보험료, 얼마나 아낄 수 있을까요?',
+            subtitle: '전문가 1:1 비교 분석으로 월 보험료 절감 솔루션',
+            adReviewNumber: '생명보험협회 심의필 제2026-00000호 (2026.02.20~2027.02.19)',
+        };
+
+        const REVIEWS = [
+            { id: 1, user: '김*현', rating: 5, date: '2026.02.15', comment: '기존 보험료가 너무 비싸서 고민이었는데, 여기서 상담받고 월 8만원이나 아꼈어요. 정말 감사합니다!' },
+            { id: 2, user: '이*우', rating: 5, date: '2026.02.10', comment: '중복 보장되는 부분이 많았는데 깔끔하게 정리해주셨네요. 설명도 친절하고 이해가 잘 됐습니다.' },
+            { id: 3, user: '박*아', rating: 4, date: '2026.02.05', comment: '상담 신청하고 바로 연락와서 놀랐어요. 전문적인 느낌이 팍팍 납니다.' }
+        ];
+
+        const PRIVACY_POLICY_DETAIL = {
+            purpose: '보험 상품 정보 제공, 맞춤형 보험 설계 상담 및 보험료 비교 분석 서비스 제공',
+            items: '이름, 휴대폰 번호',
+            period: '상담 완료 후 1년 또는 신청자의 삭제 요청 시까지 (관계 법령에 따라 보존이 필요한 경우 해당 기간까지)',
+            refusal: '본 개인정보 수집 및 이용에 대한 동의를 거부할 권리가 있습니다. 다만, 동의 거부 시 맞춤형 보험 상담 서비스 이용이 제한될 수 있습니다.'
+        };
+
+        const FULL_PRIVACY_POLICY = (
+            <div className="space-y-6 text-gray-700 leading-relaxed text-sm">
+                <section>
+                    <h5 className="font-black text-gray-900 mb-2">1. 개인정보의 처리 목적</h5>
+                    <p>메가주식회사(이하 "회사")은/는 회사가 제공하는 해당페이지에서 안내하는 상품 안내, 상품 가입, 비교견적 상담 등의 서비스 제공 및 신규 서비스의 개발 등의 목적으로 최소한으로 개인정보를 수집하고 있습니다.</p>
+                </section>
+                <section>
+                    <h5 className="font-black text-gray-900 mb-2">2. 수집하는 개인정보의 범위 및 수집방법</h5>
+                    <div className="space-y-3">
+                        <p><strong>가. 수집하는 개인정보의 범위</strong></p>
+                        <p>1) 회사에서는 귀하에게 서비스 제공을 위해서 아래와 같은 개인정보를 수집하고 있습니다.<br/>- 필수항목 : 성명, 성별, 연락처, 생년월일, IP Address, 참여일시, 유입경로(참여매체) 등</p>
+                        <p>2) 개인정보 제공자는 해당 정보에 대한 동의를 거부할 수 있습니다. 다만, 이에 대한 동의를 하시지 않을 경우에는 해당페이지 내 서비스 또는 상품에 대한 안내를 받지 못할 수 있음을 알려드립니다.</p>
+                        <p><strong>나. 수집방법</strong></p>
+                        <p>회사는 귀하가 서비스를 이용하실 때 필수적인 정보를 온라인 상에서 입력 받고 있습니다. 또한 서비스 내에서의 설문조사나 이벤트 행사 시 통계분석이나 경품 제공 등을 위해 선별적으로 개인정보 입력을 요청할 수 있습니다.</p>
+                        <p><strong>다. 가명정보의 처리</strong></p>
+                        <p>회사는 수집한 정보 중 가명정보는 통계작성, 과학적 연구, 공익적 기록보존 등을 위하여 귀하의 동의 없이 처리할 수 있습니다.</p>
+                    </div>
+                </section>
+                <section>
+                    <h5 className="font-black text-gray-900 mb-2">3. 개인정보의 보유 및 이용기간</h5>
+                    <p>1) 회사가 수집하는 개인정보의 보유 및 처리 기간은 정보주체가 회사의 정보주체 또는 회원으로써 회사에 제공하는 서비스를 이용하는 동안 회원 탈퇴를 요청하거나 개인정보의 수집 이용 등에 대한 동의를 철회할 때까지 보존합니다.</p>
+                    <p>2) 단, 상법 등 법령의 규정에 의하여 보존할 필요성이 있는 경우에는 예외로 합니다.</p>
+                    <p>3) 회사가 처리하는 개인정보는 수집∙이용 목적으로 명시한 범위 내에서 처리하며, 개인정보보호법 및 관련 법령에서 정하는 보유기간을 준용하여 이행하고 있습니다.</p>
+                    <p>4) 회사는 매년 1 회 이상 수집∙이용 목적 및 수집한 개인정보의 항목 및 이를 제공받은 자와 제공 목적 및 제공한 개인정보의 항목을 통지합니다.</p>
+                </section>
+                <section>
+                    <h5 className="font-black text-gray-900 mb-2">4. 개인정보의 파기절차 및 방법</h5>
+                    <p><strong>가. 파기절차</strong> : 회사는 원칙적으로 개인정보의 보유기간이 경과했거나 처리목적이 달성된 경우에는 지체없이 해당 개인정보 파기합니다. 다만, 다른 법률에 따라 보존하여야 하는 경우에는 그러하지 않습니다.</p>
+                    <p><strong>나. 파기방법</strong> : 전자적 파일형태는 불가능한 방법으로 영구삭제, 기록물/인쇄물 등은 파쇄 또는 소각</p>
+                    <p><strong>다. 장기미이용고객의 개인정보 파기</strong> : 회사는 5년의 기간 동안 서비스를 이용하지 아니하는 이용자의 개인정보를 즉시 파기하거나 별도로 관리합니다.</p>
+                </section>
+                <section>
+                    <h5 className="font-black text-gray-900 mb-2">5. 개인정보의 제3자 제공</h5>
+                    <p>회사는 수집∙보유하고 있는 개인정보를 이용자의 동의 없이는 제3자에게 제공하지 않으며, 법률에 특별한 규정이 있거나 법령상 의무를 준수하기 위하여 불가피한 경우 등에 한해 예외적으로 제공할 수 있습니다.</p>
+                </section>
+                <section>
+                    <h5 className="font-black text-gray-900 mb-2">6. 개인정보 처리의 위탁</h5>
+                    <p><strong>[위탁대상자(수탁자)]</strong> : 메가주식회사, 위 회사와 모집위탁계약을 체결한 자(설계사, 대리점)</p>
+                    <p><strong>위탁업무 내용</strong> : 보험상품, 서비스 소개 및 판매, 사은/판촉행사안내(전화, SMS포함), 고지사항 전달, 본인 의사 확인, 불만 처리 등</p>
+                    <p><strong>보유 및 이용기간</strong> : 수집 및 동의일로부터 5년</p>
+                </section>
+                <section>
+                    <h5 className="font-black text-gray-900 mb-2">7. 개인정보 제공자 및 법정대리인의 권리와 그 행사방법</h5>
+                    <p>이용자 및 법정대리인은 언제든지 개인정보를 조회하거나 수정할 수 있으며, 동의철회(가입해지)를 요청할 수도 있습니다. 오류 정정 요청 시 완료 전까지 이용/제공을 제한합니다.</p>
+                </section>
+                <section>
+                    <h5 className="font-black text-gray-900 mb-2">8. 인터넷 접속정보파일(cookie)의 운영에 관한 사항</h5>
+                    <p>이용자의 접속 빈도나 방문 시간 분석 등을 통해 타겟 마케팅 및 맞춤 서비스를 제공합니다. 고객은 웹 브라우저 설정을 통해 쿠키 설치를 거부할 수 있습니다.</p>
+                </section>
+                <section>
+                    <h5 className="font-black text-gray-900 mb-2">9. 개인정보보호를 위한 기술적/관리적 대책</h5>
+                    <p>백신프로그램, 해킹 방지 장치, 보안장치(SSL), 접근 권한 제한 등 안전성 확보를 위한 대책을 강구하고 있습니다.</p>
+                </section>
+                <section>
+                    <h5 className="font-black text-gray-900 mb-2">10. 개인정보관리책임자</h5>
+                    <p>이 름 : 장진서<br/>이메일 : jinseo021017@naver.com</p>
+                </section>
+                <section className="pt-4 border-t border-gray-100 text-[11px] text-gray-400">
+                    <p>개인정보 처리방침 공고일자 : 2026년 03월 03일</p>
+                    <p>개인정보 처리방침 시행일자 : 2026년 03월 10일</p>
+                </section>
+            </div>
+        );
+
+        const ESSENTIAL_INFO = (
+            <div className="space-y-6 text-gray-700 leading-relaxed text-sm">
+                <section>
+                    <p>※ 보험계약체결 전, 보험상품 설명서 및 약관을 꼭 읽어보시길 바랍니다.</p>
+                </section>
+                <section>
+                    <h5 className="font-black text-gray-900 mb-2">※ 계약 전 알릴 의무 및 위반시 불이익 사항</h5>
+                    <p>보험계약 청약 시 계약자 및 피보험자는 청약서 상의 질문사항(고지사항)에 대하여 사실대로 알려야 합니다. 만일 허위 또는 부실하게 알렸을 경우에는 보험사고 발생시 보상이 되지 않음은 물론 보험계약이 해지될 수 있습니다.</p>
+                </section>
+                <section>
+                    <p>※ 금융소비자는 보험가입 시 보험상품에 대한 충분한 설명을 받으실 권리가 있으며, 그 설명을 이해한 후 가입하시기 바랍니다.</p>
+                </section>
+                <section>
+                    <h5 className="font-black text-gray-900 mb-2">※ 예금자보호제도</h5>
+                    <p>보험계약은 예금자보호법에 따라 예금보험공사가 보호하되, 보호한도는 본 보험회사에 있는 귀하의 모든 예금보호대상 금융상품의 해지환급금에 기타지급금을 합하여 1인당 <strong>"최고 1억원"</strong>이며, 1억원을 초과하는 나머지 금액은 보호하지 않습니다.</p>
+                </section>
+                <section>
+                    <h5 className="font-black text-gray-900 mb-2">※ 청약철회 및 품질보증</h5>
+                    <p><strong>[청약철회]</strong> 보험증권을 받은 날부터 15일 이내에 조건없이 청약철회 가능 (단, 청약일부터 최대 30일 이내/만 65세 이상은 45일 이내) 청약철회 접수일부터 3일 이내 납입보험료 전액 환급합니다.</p>
+                    <p><strong>[품질보증해지]</strong> 보험계약 청약 시 회사가 약관과 계약자용 청약서를 전달하지 않거나 약관의 중요한 내용을 설명하지 않은 때 또는 청약서에 자필서명을 하지 아니한 때에는, 계약자는 계약성립일로부터 3개월 이내에 계약을 취소할 수 있습니다.</p>
+                </section>
+                <section>
+                    <p>※ 메가주식회사 는 다수의 보험사와 계약 체결 및 대리, 중개하는 대리점입니다. 메가주식회사 는 보험사로부터 보험계약체결권을 부여받지 아니한 금융상품판매 대리, 중개업자임을 알려드립니다.</p>
+                </section>
+                <section>
+                    <p>※ 메가주식회사 는 금융소비자보호에 관한 법률 및 회사 내부통제기준에 따른 광고 관련 절차를 준수하고 있습니다.</p>
+                </section>
+            </div>
+        );
+
+        // --- Components ---
+
+        const StarIcon = ({ filled }) => (
+            <svg className={`w-4 h-4 ${filled ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+            </svg>
+        );
+
+        const ReviewCard = ({ review }) => (
+            <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col gap-3 transition-all hover:shadow-md">
+                <div className="flex justify-between items-start">
+                    <div className="flex flex-col">
+                        <div className="flex mb-1">
+                            {[1, 2, 3, 4, 5].map((s) => (
+                                <StarIcon key={s} filled={s <= review.rating} />
+                            ))}
+                        </div>
+                        <span className="text-sm font-bold text-gray-400">{review.user} | {review.date}</span>
+                    </div>
+                </div>
+                <p className="text-base text-gray-700 leading-relaxed font-medium">{review.comment}</p>
+            </div>
+        );
+
+        const OrderForm = () => {
+            const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/1R81fz4Jm2qRHJkVvw5n1beop2h8IsBgFM2Xjn3ZogdI/formResponse';
+            const FORM_ENTRY_IDS = { name: '242227916', phone: '1630132293' };
+
+            const [formData, setFormData] = useState({ name: '', phone: '', agreed: true });
+            const [isSubmitting, setIsSubmitting] = useState(false);
+            const [isSuccess, setIsSuccess] = useState(false);
+            const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+
+            const handlePhoneChange = (e) => {
+                const value = e.target.value.replace(/[^0-9]/g, '');
+                let formatted = value;
+                if (value.length > 3 && value.length <= 7) formatted = value.slice(0, 3) + '-' + value.slice(3);
+                else if (value.length > 7) formatted = value.slice(0, 3) + '-' + value.slice(3, 7) + '-' + value.slice(7, 11);
+                setFormData({ ...formData, phone: formatted });
+            };
+
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                setIsSubmitting(true);
+                
+                const body = new URLSearchParams();
+                body.append('entry.' + FORM_ENTRY_IDS.name, formData.name);
+                body.append('entry.' + FORM_ENTRY_IDS.phone, formData.phone);
+                
+                try {
+                    await window.fetch(GOOGLE_FORM_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: body.toString(),
+                    });
+
+                    setIsSuccess(true);
+                } catch (err) {
+                    alert('접수 중 오류가 발생했습니다.');
+                } finally {
+                    setIsSubmitting(false);
+                }
+            };
+
+            if (isSuccess) return (
+                <div className="text-center py-12 px-8 bg-gray-50 rounded-[40px] border border-gray-100 animate-fade-in">
+                    <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-100 text-2xl">✓</div>
+                    <h3 className="text-2xl font-black mb-3">상담 신청 완료</h3>
+                    <p className="text-sm text-gray-500 mb-10 leading-relaxed">정상적으로 접수되었습니다.<br/>곧 전문가가 연락드릴 예정입니다.</p>
+                    <button type="button" onClick={() => setIsSuccess(false)} className="bg-white px-12 py-3 rounded-2xl border border-gray-200 text-sm font-black shadow-sm active:scale-95 transition-all">돌아가기</button>
+                </div>
+            );
+
+            return (
+                <form onSubmit={handleSubmit} className="space-y-6 text-left">
+                    <input 
+                        type="text" 
+                        required 
+                        placeholder="성함을 입력하세요" 
+                        className="w-full h-16 bg-gray-50 rounded-2xl px-6 focus:ring-2 focus:ring-blue-500 outline-none font-bold text-gray-900 shadow-inner" 
+                        value={formData.name} 
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })} 
+                    />
+                    <input 
+                        type="tel" 
+                        required 
+                        placeholder="휴대폰 번호 (010-0000-0000)" 
+                        maxLength={13} 
+                        className="w-full h-16 bg-gray-50 rounded-2xl px-6 focus:ring-2 focus:ring-blue-500 outline-none font-bold text-gray-900 shadow-inner" 
+                        value={formData.phone} 
+                        onChange={handlePhoneChange} 
+                    />
+                    <div className="p-5 bg-gray-50 rounded-2xl border border-gray-100">
+                        <label className="flex items-start gap-3 cursor-pointer group">
+                            <input 
+                                type="checkbox" 
+                                required 
+                                className="mt-1 w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
+                                checked={formData.agreed} 
+                                onChange={(e) => setFormData({ ...formData, agreed: e.target.checked })} 
+                            />
+                            <div className="flex-1">
+                                <div className="flex justify-between items-center mb-1">
+                                    <span className="text-xs font-black text-gray-700">개인정보 수집 및 이용 동의 [필수]</span>
+                                    <button type="button" onClick={() => setShowPrivacyModal(true)} className="text-[10px] font-bold text-blue-600 underline underline-offset-2">상세보기</button>
+                                </div>
+                                <p className="text-[10px] text-gray-400">보험 상담 서비스를 위한 필수 정보 수집에 동의합니다.</p>
+                                <p className="text-[12px] text-gray-400 mt-2 leading-relaxed border-t border-gray-100 pt-2">
+                                    <strong className="text-gray-600 block mb-1">승환계약 시 유의문구</strong>
+                                    보험계약자가 기존 보험을 해지하고, 새로운 보험계약을 체결하는 과정에서<br/>
+                                    ① 질병이력, 연령증가 등으로 가입이 거절되거나, 보험료가 인상될 수 있습니다.<br/>
+                                    ② 가입 상품에 따라 새로운 면책기간 적용 및 보장 제한 등 기타 불이익이 발생할 수 있습니다.
+                                </p>
+                            </div>
+                        </label>
+                    </div>
+                    <button 
+                        type="submit" 
+                        disabled={isSubmitting} 
+                        className="w-full h-16 bg-blue-600 text-white font-black text-lg rounded-2xl shadow-xl shadow-blue-100 active:scale-95 transition-all flex items-center justify-center"
+                    >
+                        {isSubmitting ? (
+                            <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        ) : '무료 진단 및 상담 신청'}
+                    </button>
+                    {showPrivacyModal && (
+                        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm animate-fade-in">
+                            <div className="bg-white w-full max-w-[380px] rounded-[32px] p-8 shadow-2xl">
+                                <div className="flex justify-between items-center mb-6">
+                                    <h4 className="text-xl font-black">개인정보 수집 동의</h4>
+                                    <button type="button" onClick={() => setShowPrivacyModal(false)} className="text-gray-400">✕</button>
+                                </div>
+                                <div className="text-sm text-gray-600 space-y-5 max-h-[250px] overflow-y-auto mb-8 pr-2 custom-scrollbar">
+                                    <section>
+                                        <p className="font-black text-gray-900 mb-1">1. 수집 및 이용 목적</p>
+                                        <p>{PRIVACY_POLICY_DETAIL.purpose}</p>
+                                    </section>
+                                    <section>
+                                        <p className="font-black text-gray-900 mb-1">2. 수집하는 항목</p>
+                                        <p>{PRIVACY_POLICY_DETAIL.items}</p>
+                                    </section>
+                                    <section>
+                                        <p className="font-black text-gray-900 mb-1">3. 보유 및 이용 기간</p>
+                                        <p>{PRIVACY_POLICY_DETAIL.period}</p>
+                                    </section>
+                                </div>
+                                <button type="button" onClick={() => setShowPrivacyModal(false)} className="w-full bg-gray-900 text-white py-4 rounded-2xl font-black active:scale-95 transition-all">확인했습니다</button>
+                            </div>
+                        </div>
+                    )}
+                </form>
+            );
+        };
+
+        // --- Main App ---
+
+        const App = () => {
+            const orderFormRef = useRef(null);
+            const [showFullPrivacy, setShowFullPrivacy] = useState(false);
+            const [showEssentialInfo, setShowEssentialInfo] = useState(false);
+
+            const scrollToOrder = () => {
+                orderFormRef.current?.scrollIntoView({ behavior: 'smooth' });
+            };
+
+            return (
+                <div className="min-h-screen text-gray-900 selection:bg-blue-100 overflow-x-hidden relative">
+                    <div className="fixed inset-0 bg-overlay z-[-1]"></div>
+                    
+                    <header className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 h-20 flex items-center justify-center border-b border-gray-100 px-6">
+                        <div className="w-full max-w-[500px] flex items-center justify-between">
+                            {/* Header content removed as per request */}
+                        </div>
+                    </header>
+
+                    <main className="w-full max-w-[500px] mx-auto pt-40 pb-20 px-8 text-center">
+                        <div className="animate-fade-in">
+                            <h1 className="text-[40px] font-black leading-[1.3] mb-10 tracking-tight text-gray-900">
+                                내 보험료,<br/>
+                                얼마나 아낄 수 있을까요?
+                            </h1>
+                            <p className="text-[15px] text-gray-500 font-bold mb-16 leading-relaxed">{SITE_INFO.subtitle}</p>
+                            <button 
+                                onClick={scrollToOrder} 
+                                className="w-full bg-blue-600 text-white font-black py-5 rounded-[28px] text-[22px] shadow-2xl shadow-blue-100 active:scale-95 transition-all hover:bg-blue-700 mb-20"
+                            >
+                                지금 무료 진단 받기
+                            </button>
+                        </div>
+
+                        <div ref={orderFormRef} className="w-full bg-white border border-gray-100 rounded-[40px] px-8 py-12 shadow-sm mb-12">
+                            <div className="text-center mb-10">
+                                <h2 className="text-[32px] font-black mb-3 tracking-tighter text-gray-900">진단 신청</h2>
+                                <p className="text-gray-400 text-sm font-medium leading-relaxed">보험업법을 준수하며, 전문가가<br/>순차적으로 맞춤 분석을 도와드립니다.</p>
+                            </div>
+                            <OrderForm />
+                        </div>
+
+                        <div className="text-left bg-gray-50 rounded-3xl p-6 border border-gray-100 mb-20">
+                            <p className="text-[15px] font-black text-gray-900 mb-4">[보험 광고 및 계약 관련 필수 고지 사항]</p>
+                            <div className="text-[14px] text-gray-500 space-y-2 leading-relaxed font-medium">
+                                <p>※ 상기 내용은 <strong className="text-gray-900">메가주식회사</strong>의 의견이며, 계약체결에 따른 이익 또는 손실은 보험계약자 등에게 귀속됩니다.</p>
+                                <p>※ 메가주식회사 보험대리점(등록번호 제2005108004호)</p>
+                                <p>※ 보험설계사 이정우</p>
+                                <p>※ 생명보험협회등록번호 : 20241217401110</p>
+                                <p>※ 손해보험협회등록번호 : 20241217401110</p>
+                                <p>※ 보험계약자가 기존 보험계약을 해지하고 새로운 보험계약을 체결하는 과정에서</p>
+                                <p className="pl-2">① 질병이력, 연령증가 등으로 가입이 거절되거나 보험료가 인상될 수 있습니다.</p>
+                                <p className="pl-2">② 가입 상품에 따라 새로운 면책기간 적용 및 보장 제한 등 기타 불이익이 발생할 수 있습니다.</p>
+                                <p>광고심의필 제 0000-00-0000호(유효기간 0000.00.00~0000.00.00)</p>
+                                <p>※ 본 광고는 광고심의기준을 준수하였으며, 유효기간은 심의일로부터 1년입니다.</p>
+                            </div>
+                        </div>
+
+                        <section className="mb-24">
+                            <div className="grid grid-cols-2 gap-5">
+                                {[
+                                    { icon: 'BarChart3', label: '32개사 비교', desc: '국내 전 금융사' },
+                                    { icon: 'TrendingDown', label: '30% 절감', desc: '평균 다이어트' },
+                                    { icon: 'Search', label: '중복 체크', desc: '숨은 보장 찾기' },
+                                    { icon: 'Shield', label: '책임 설계', desc: '1:1 전문가 매칭' }
+                                ].map((item, i) => (
+                                    <div key={i} className="bg-gray-50 border border-gray-100 p-7 rounded-[35px] text-center transition-all hover:bg-gray-100 flex flex-col items-center">
+                                        <div className="text-blue-600 mb-3"><Icon name={item.icon} size={28} /></div>
+                                        <div className="text-base font-black text-gray-900 mb-1">{item.label}</div>
+                                        <div className="text-[12px] text-gray-400 font-bold uppercase tracking-tighter">{item.desc}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+
+                        <section className="mb-24 text-center">
+                            <div className="mb-12">
+                                <h3 className="text-[26px] font-black text-gray-900 mb-2">고객 리얼 후기</h3>
+                                <p className="text-sm text-gray-400 font-bold">많은 분들이 이미 경험하셨습니다</p>
+                            </div>
+                            <div className="space-y-4 text-left">
+                                {REVIEWS.map((review) => (
+                                    <ReviewCard key={review.id} review={review} />
+                                ))}
+                            </div>
+                        </section>
+                    </main>
+
+                    <footer className="w-full bg-gray-50 py-20 px-8 text-[14px] text-gray-400 leading-relaxed flex justify-center border-t border-gray-100">
+                        <div className="w-full max-w-[500px]">
+                            <div className="mb-10">
+                                <p className="mb-4">
+                                    상호명 : 메가주식회사 | 사업자번호 : 128-86-07154 | 대표이사 : 전형노, 송병태<br/>
+                                    주소 : 서울 영등포구 영신로 166, 103호(영등포동6가, 영등포반도아이밸리) | Tel : 02-862-0737<br/>
+                                    보험대리점등록번호 : 2005108004
+                                </p>
+                                <div className="flex gap-2 font-black my-6 text-gray-600 text-[14px]">
+                                    <button onClick={() => setShowFullPrivacy(true)} className="hover:text-blue-600 transition-colors cursor-pointer">[개인정보처리방침]</button>
+                                    <span className="opacity-20">|</span>
+                                    <button onClick={() => setShowEssentialInfo(true)} className="hover:text-blue-600 transition-colors cursor-pointer">[필수안내사항]</button>
+                                </div>
+                                <div className="mt-10 pt-10 border-t border-gray-200 space-y-4 text-[16px] text-gray-500">
+                                    <p className="font-black text-gray-900 text-[17px]">[보험 광고 및 계약 관련 필수 고지 사항]</p>
+                                    <p>※ 상기 내용은 메가주식회사 의 의견이며, 계약체결에 따른 이익 또는 손실은 보험계약자 등에게 귀속됩니다.</p>
+                                    <p>※ 메가주식회사 보험대리점(등록번호 제2005108004호)</p>
+                                    <p>※ 보험설계사 이정우</p>
+                                    <p>※ 생명보험협회등록번호 : 20241217401110</p>
+                                    <p>※ 손해보험협회등록번호 : 20241217401110</p>
+                                    <p>※ 보험계약자가 기존 보험계약을 해지하고 새로운 보험계약을 체결하는 과정에서<br/>
+                                        ① 질병이력, 연령증가 등으로 가입이 거절되거나 보험료가 인상될 수 있습니다.<br/>
+                                        ② 가입 상품에 따라 새로운 면책기간 적용 및 보장 제한 등 기타 불이익이 발생할 수 있습니다.</p>
+                                    <p>광고심의필 제 0000-00-0000호(유효기간 0000.00.00~0000.00.00)</p>
+                                    <p>※ 본 광고는 광고심의기준을 준수하였으며, 유효기간은 심의일로부터 1년입니다.</p>
+                                </div>
+                            </div>
+                            <p className="border-t border-gray-200 pt-8 font-medium">Copyright © 2026 {SITE_INFO.name} All rights reserved.</p>
+                        </div>
+                    </footer>
+
+                    {/* 모달 영역 */}
+                    {showFullPrivacy && (
+                        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm animate-fade-in">
+                            <div className="bg-white w-full max-w-[500px] rounded-[40px] p-8 shadow-2xl flex flex-col max-h-[85vh]">
+                                <div className="flex justify-between items-center mb-6">
+                                    <h4 className="text-2xl font-black">개인정보처리방침</h4>
+                                    <button onClick={() => setShowFullPrivacy(false)} className="text-gray-400 text-xl p-2"><Icon name="X" /></button>
+                                </div>
+                                <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+                                    {FULL_PRIVACY_POLICY}
+                                </div>
+                                <div className="pt-8">
+                                    <button onClick={() => setShowFullPrivacy(false)} className="w-full bg-gray-900 text-white py-5 rounded-2xl font-black active:scale-95 transition-all">닫기</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {showEssentialInfo && (
+                        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm animate-fade-in">
+                            <div className="bg-white w-full max-w-[500px] rounded-[40px] p-8 shadow-2xl flex flex-col max-h-[85vh]">
+                                <div className="flex justify-between items-center mb-6">
+                                    <h4 className="text-2xl font-black">필수안내사항</h4>
+                                    <button onClick={() => setShowEssentialInfo(false)} className="text-gray-400 text-xl p-2"><Icon name="X" /></button>
+                                </div>
+                                <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+                                    {ESSENTIAL_INFO}
+                                </div>
+                                <div className="pt-8">
+                                    <button onClick={() => setShowEssentialInfo(false)} className="w-full bg-gray-900 text-white py-5 rounded-2xl font-black active:scale-95 transition-all">닫기</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
