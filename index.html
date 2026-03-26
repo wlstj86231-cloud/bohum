@@ -99,7 +99,10 @@
         const REVIEWS = [
             { id: 1, user: '김*현', rating: 5, date: '2026.02.15', comment: '기존 보험료가 너무 비싸서 고민이었는데, 여기서 상담받고 월 8만원이나 아꼈어요. 정말 감사합니다!' },
             { id: 2, user: '이*우', rating: 5, date: '2026.02.10', comment: '중복 보장되는 부분이 많았는데 깔끔하게 정리해주셨네요. 설명도 친절하고 이해가 잘 됐습니다.' },
-            { id: 3, user: '박*아', rating: 4, date: '2026.02.05', comment: '상담 신청하고 바로 연락와서 놀랐어요. 전문적인 느낌이 팍팍 납니다.' }
+            { id: 3, user: '박*아', rating: 4, date: '2026.02.05', comment: '상담 신청하고 바로 연락와서 놀랐어요. 전문적인 느낌이 팍팍 납니다.' },
+            { id: 4, user: '최*준', rating: 5, date: '2026.03.02', comment: '지인 추천으로 받아봤는데 왜 진작 안했나 싶네요. 보험료 다이어트 성공했습니다!' },
+            { id: 5, user: '정*윤', rating: 5, date: '2026.03.10', comment: '어려운 보험 용어들을 쉽게 풀어서 설명해주셔서 너무 좋았어요. 믿음이 갑니다.' },
+            { id: 6, user: '강*훈', rating: 4, date: '2026.03.20', comment: '여러 군데 비교해봤는데 여기가 가장 체계적이고 분석이 날카롭네요. 만족합니다.' }
         ];
 
         const PRIVACY_POLICY_DETAIL = {
@@ -404,21 +407,18 @@
                             <OrderForm />
                         </div>
 
-                        <div className="text-left bg-gray-50 rounded-3xl p-6 border border-gray-100 mb-20">
-                            <p className="text-[15px] font-black text-gray-900 mb-4">[보험 광고 및 계약 관련 필수 고지 사항]</p>
-                            <div className="text-[14px] text-gray-500 space-y-2 leading-relaxed font-medium">
-                                <p>※ 상기 내용은 <strong className="text-gray-900">메가주식회사</strong>의 의견이며, 계약체결에 따른 이익 또는 손실은 보험계약자 등에게 귀속됩니다.</p>
-                                <p>※ 메가주식회사 보험대리점(등록번호 제2005108004호)</p>
-                                <p>※ 보험설계사 이정우</p>
-                                <p>※ 생명보험협회등록번호 : 20241217401110</p>
-                                <p>※ 손해보험협회등록번호 : 20241217401110</p>
-                                <p>※ 보험계약자가 기존 보험계약을 해지하고 새로운 보험계약을 체결하는 과정에서</p>
-                                <p className="pl-2">① 질병이력, 연령증가 등으로 가입이 거절되거나 보험료가 인상될 수 있습니다.</p>
-                                <p className="pl-2">② 가입 상품에 따라 새로운 면책기간 적용 및 보장 제한 등 기타 불이익이 발생할 수 있습니다.</p>
-                                <p>광고심의필 제 0000-00-0000호(유효기간 0000.00.00~0000.00.00)</p>
-                                <p>※ 본 광고는 광고심의기준을 준수하였으며, 유효기간은 심의일로부터 1년입니다.</p>
+                        <section className="mb-24 text-center">
+                            <div className="mb-12">
+                                <h3 className="text-[26px] font-black text-gray-900 mb-2">고객 리얼 후기</h3>
+                                <p className="text-sm text-gray-400 font-bold">많은 분들이 이미 경험하셨습니다</p>
                             </div>
-                        </div>
+                            <div className="space-y-4 text-left">
+                                {REVIEWS.map((review) => (
+                                    <ReviewCard key={review.id} review={review} />
+                                ))}
+                            </div>
+                        </section>
+
 
                         <section className="mb-24">
                             <div className="grid grid-cols-2 gap-5">
@@ -437,17 +437,6 @@
                             </div>
                         </section>
 
-                        <section className="mb-24 text-center">
-                            <div className="mb-12">
-                                <h3 className="text-[26px] font-black text-gray-900 mb-2">고객 리얼 후기</h3>
-                                <p className="text-sm text-gray-400 font-bold">많은 분들이 이미 경험하셨습니다</p>
-                            </div>
-                            <div className="space-y-4 text-left">
-                                {REVIEWS.map((review) => (
-                                    <ReviewCard key={review.id} review={review} />
-                                ))}
-                            </div>
-                        </section>
                     </main>
 
                     <footer className="w-full bg-gray-50 py-20 px-8 text-[14px] text-gray-400 leading-relaxed flex justify-center border-t border-gray-100">
