@@ -1,0 +1,8 @@
+{
+  "name": "Remix: Copy of 보험 비교 Landing Page",
+  "description": "실시간 보험료 비교 및 상담 신청을 위한 고효율 랜딩페이지",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
