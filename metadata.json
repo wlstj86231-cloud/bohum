@@ -1,6 +1,6 @@
 {
-  "name": "Remix: Copy of 보험 비교 Landing Page",
-  "description": "실시간 보험료 비교 및 상담 신청을 위한 고효율 랜딩페이지",
+  "name": "메가푸른에셋 - 내 보험 바로 진단",
+  "description": "전문가 1:1 비교 분석으로 월 보험료 절감 솔루션을 제공하는 메가푸른에셋 보험 진단 랜딩페이지입니다.",
   "requestFramePermissions": [
     "camera",
     "microphone"
