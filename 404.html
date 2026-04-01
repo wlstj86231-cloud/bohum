@@ -1,32 +1,23 @@
-name: Deploy to GitHub Pages
-
-on:
-  push:
-    branches: [main]
-
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-cache: 'npm'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build
-        run: npm run build
-        env:
-          VITE_BASE_URL: ${{ github.event.repository.name }}
-
-      - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: dist
-          branch: gh-pages
-          clean: true
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - 페이지를 찾을 수 없습니다 | 메가푸른에셋</title>
+  <style>
+    body { font-family: 'Noto Sans KR', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background: #f8fafc; }
+    .container { text-align: center; padding: 2rem; }
+    h1 { font-size: 5rem; font-weight: 900; color: #1e40af; margin: 0; }
+    p { color: #475569; font-size: 1.1rem; margin: 1rem 0 2rem; }
+    a { display: inline-block; padding: 0.75rem 2rem; background: #1e40af; color: #fff; border-radius: 0.5rem; text-decoration: none; font-weight: 700; }
+    a:hover { background: #1d4ed8; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>404</h1>
+    <p>요청하신 페이지를 찾을 수 없습니다.</p>
+    <a href="/">홈으로 돌아가기</a>
+  </div>
+</body>
+</html>
