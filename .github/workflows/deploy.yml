@@ -29,6 +29,8 @@ jobs:
           mkdir -p _site
           cp index.html _site/
           cp CNAME _site/
+          cp sitemap.xml _site/
+          cp robots.txt _site/
           cp -r public/. _site/
 
       - name: Setup Pages
