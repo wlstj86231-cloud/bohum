@@ -9,9 +9,9 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="alternate icon" href="/favicon.ico">
     <meta name="google-site-verification" content="yc4WWw7-XKBkC3neQCqd2pVZVDcIKYUvjJyjqX3RDLU" />
-    <meta name="description" content="메가푸른에셋 - 내 보험 바로 진단. 전문가 1:1 비교 분석으로 월 보험료 절감 솔루션을 제공합니다.">
+    <meta name="description" content="메가푸른에셋 보험 상담 안내와 농기계 보험 확인 자료. 가입 내역, 약관, 보장 시작일 등 확인할 항목을 정리했습니다.">
     <link rel="canonical" href="https://megapureunasset.kr/">
-    <meta name="keywords" content="보험비교, 보험진단, 보험료절감, 메가푸른에셋, 보험상담">
+    <meta name="keywords" content="보험 가입 조건, 보험 약관 확인, 농기계 보험, 메가푸른에셋, 보험 상담">
     
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -121,22 +121,6 @@
         };
 
         // --- Constants ---
-        const SITE_INFO = {
-            name: '메가주식회사',
-            title: '내 보험료, 얼마나 아낄 수 있을까요?',
-            subtitle: '전문가 1:1 비교 분석으로 월 보험료 절감 솔루션',
-            adReviewNumber: '메가 심의필 2026-6236호 (2026.03.30.~2027.03.29.)',
-        };
-
-        const REVIEWS = [
-            { id: 1, user: '김*현', rating: 5, date: '2026.02.15', comment: '기존 보험료가 너무 비싸서 고민이었는데, 여기서 상담받고 월 8만원이나 아꼈어요. 정말 감사합니다!' },
-            { id: 2, user: '이*우', rating: 5, date: '2026.02.10', comment: '중복 보장되는 부분이 많았는데 깔끔하게 정리해주셨네요. 설명도 친절하고 이해가 잘 됐습니다.' },
-            { id: 3, user: '박*아', rating: 4, date: '2026.02.05', comment: '상담 신청하고 바로 연락와서 놀랐어요. 전문적인 느낌이 팍팍 납니다.' },
-            { id: 4, user: '최*준', rating: 5, date: '2026.03.02', comment: '지인 추천으로 받아봤는데 왜 진작 안했나 싶네요. 보험료 최적화 성공했습니다!' },
-            { id: 5, user: '정*윤', rating: 5, date: '2026.03.10', comment: '어려운 보험 용어들을 쉽게 풀어서 설명해주셔서 너무 좋았어요. 믿음이 갑니다.' },
-            { id: 6, user: '강*훈', rating: 4, date: '2026.03.20', comment: '여러 군데 비교해봤는데 여기가 가장 체계적이고 분석이 날카롭네요. 만족합니다.' }
-        ];
-
         const PRIVACY_POLICY_DETAIL = {
             purpose: '보험 상품 정보 제공, 맞춤형 보험 설계 상담 및 보험료 비교 분석 서비스 제공',
             items: '이름, 휴대폰 번호',
@@ -239,28 +223,6 @@
         );
 
         // --- Components ---
-
-        const StarIcon = ({ filled }) => (
-            <svg className={`w-4 h-4 ${filled ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} viewBox="0 0 20 20">
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-            </svg>
-        );
-
-        const ReviewCard = ({ review }) => (
-            <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col gap-3 transition-all hover:shadow-md">
-                <div className="flex justify-between items-start">
-                    <div className="flex flex-col">
-                        <div className="flex mb-1">
-                            {[1, 2, 3, 4, 5].map((s) => (
-                                <StarIcon key={s} filled={s <= review.rating} />
-                            ))}
-                        </div>
-                        <span className="text-sm font-bold text-gray-400">{review.user} | {review.date}</span>
-                    </div>
-                </div>
-                <p className="text-base text-gray-700 leading-relaxed font-medium">{review.comment}</p>
-            </div>
-        );
 
         const OrderForm = () => {
             const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/1R81fz4Jm2qRHJkVvw5n1beop2h8IsBgFM2Xjn3ZogdI/formResponse';
@@ -419,15 +381,15 @@
                     <main className="w-full max-w-[500px] mx-auto pt-40 pb-20 px-8 text-center">
                         <div className="animate-fade-in">
                             <h1 className="text-[40px] font-black leading-[1.3] mb-10 tracking-tight text-gray-900">
-                                내 보험료,<br/>
-                                얼마나 아낄 수 있을까요?
+                                보험 가입 조건,<br/>
+                                차근히 확인해 보세요
                             </h1>
-                            <p className="text-[15px] text-gray-500 font-bold mb-16 leading-relaxed">{SITE_INFO.subtitle}</p>
+                            <p className="text-[15px] text-gray-500 font-bold mb-16 leading-relaxed">현재 가입 내역과 새 제안의 약관·보험료·보장 시작일을 함께 확인합니다.</p>
                             <button 
                                 onClick={scrollToOrder} 
                                 className="w-full bg-blue-600 text-white font-black py-5 rounded-[28px] text-[22px] shadow-2xl shadow-blue-100 active:scale-95 transition-all hover:bg-blue-700 mb-20"
                             >
-                                지금 무료 진단 받기
+                                보험 상담 신청하기
                             </button>
                         </div>
 
@@ -439,15 +401,20 @@
                             <OrderForm />
                         </div>
 
-                        <section className="mb-24 text-center">
+                        <section className="mb-24 text-left">
                             <div className="mb-12">
-                                <h3 className="text-[26px] font-black text-gray-900 mb-2">고객 리얼 후기</h3>
-                                <p className="text-sm text-gray-400 font-bold">많은 분들이 이미 경험하셨습니다</p>
+                                <h3 className="text-[26px] font-black text-gray-900 mb-2">상담 전에 확인할 자료</h3>
+                                <p className="text-sm text-gray-500">보험증권과 상품설명서·약관을 준비하고, 가입 중인 담보와 새 제안의 조건을 각각 확인하세요.</p>
                             </div>
-                            <div className="space-y-4 text-left">
-                                {REVIEWS.map((review) => (
-                                    <ReviewCard key={review.id} review={review} />
-                                ))}
+                            <div className="space-y-4">
+                                <a href="/guides/used-farm-machinery-insurance-check/" className="block bg-white p-5 rounded-2xl border border-gray-200 hover:border-blue-500">
+                                    <strong className="block text-gray-900 mb-1">중고 농기계 보험 가입 전 확인표</strong>
+                                    <span className="text-sm text-gray-500">기계 정보, 담보 범위, 자기부담금, 계약 시작일을 보험사에 물을 때 쓰는 질문표</span>
+                                </a>
+                                <a href="/guides/farm-machinery-incident-record/" className="block bg-white p-5 rounded-2xl border border-gray-200 hover:border-blue-500">
+                                    <strong className="block text-gray-900 mb-1">농기계 사고·침수 후 기록표</strong>
+                                    <span className="text-sm text-gray-500">안전 조치 이후 사고 상황과 보험사 문의 내용을 정리하는 메모</span>
+                                </a>
                             </div>
                         </section>
 
@@ -455,10 +422,10 @@
                         <section className="mb-24">
                             <div className="grid grid-cols-2 gap-5">
                                 {[
-                                    { icon: 'BarChart3', label: '32개사 비교', desc: '국내 전 금융사' },
-                                    { icon: 'TrendingDown', label: '보험료 최적화', desc: '맞춤형 리모델링' },
-                                    { icon: 'Search', label: '중복 체크', desc: '숨은 보장 찾기' },
-                                    { icon: 'Shield', label: '책임 설계', desc: '1:1 전문가 매칭' }
+                                    { icon: 'BarChart3', label: '가입 내역', desc: '현재 증권 확인' },
+                                    { icon: 'TrendingDown', label: '보험료 비교', desc: '같은 조건으로 비교' },
+                                    { icon: 'Search', label: '담보 확인', desc: '약관과 설명서 확인' },
+                                    { icon: 'Shield', label: '상담 기록', desc: '질문과 답변 정리' }
                                 ].map((item, i) => (
                                     <div key={i} className="bg-gray-50 border border-gray-100 p-7 rounded-[35px] text-center transition-all hover:bg-gray-100 flex flex-col items-center">
                                         <div className="text-blue-600 mb-3"><Icon name={item.icon} size={28} /></div>
