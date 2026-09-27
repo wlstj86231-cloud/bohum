@@ -9,9 +9,9 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="alternate icon" href="/favicon.ico">
     <meta name="google-site-verification" content="yc4WWw7-XKBkC3neQCqd2pVZVDcIKYUvjJyjqX3RDLU" />
-    <meta name="description" content="메가푸른에셋 보험 상담 안내와 농기계 보험 확인 자료. 가입 내역, 약관, 보장 시작일 등 확인할 항목을 정리했습니다.">
+    <meta name="description" content="농기계의 인수 상태, 정비·사고 이력과 보험 확인 사항을 기록하는 자산 기록부. 가입 전 질문표와 사고 후 기록표를 함께 제공합니다.">
     <link rel="canonical" href="https://megapureunasset.kr/">
-    <meta name="keywords" content="보험 가입 조건, 보험 약관 확인, 농기계 보험, 메가푸른에셋, 보험 상담">
+    <meta name="keywords" content="농기계 자산 기록, 트랙터 정비 이력, 농기계 사고 기록, 농기계 보험 확인, 메가푸른에셋">
     
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -31,7 +31,7 @@
       gtag('config', 'G-KDE17SHVX4');
     </script>
 
-    <title>메가푸른에셋 - 내 보험 바로 진단</title>
+    <title>농기계 자산 기록과 보험 확인 | 메가푸른에셋</title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -48,10 +48,8 @@
         body {
             font-family: 'Noto Sans KR', sans-serif;
             -webkit-tap-highlight-color: transparent;
-            background-color: #f8fafc;
-            background-image: url('https://images.unsplash.com/photo-1513002749550-c59d786b8e6c?auto=format&fit=crop&w=1920&q=80');
-            background-size: cover;
-            background-position: center;
+            background-color: #f3f8f2;
+            background-image: linear-gradient(180deg, #e7f2e9 0%, #f8fbf7 48%, #f0f6f0 100%);
             background-attachment: fixed;
             background-repeat: no-repeat;
         }
@@ -83,6 +81,12 @@
 
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.05); }
+        .agri-intro { max-width: 760px; margin: 112px auto 0; padding: 26px 30px; background: rgba(255,255,255,.96); border: 1px solid #d7e7da; border-radius: 24px; box-shadow: 0 12px 35px rgba(19,66,37,.08); position: relative; z-index: 1; }
+        .agri-intro h1 { font-size: clamp(28px, 5vw, 42px); line-height: 1.26; margin: 0 0 13px; color: #1c3729; }
+        .agri-intro p { color: #455b4b; line-height: 1.75; margin: 0 0 14px; }
+        .agri-intro nav { display: flex; flex-wrap: wrap; gap: 9px; }
+        .agri-intro a { color: #12563a; background: #ebf6ed; border: 1px solid #cce3d1; text-decoration: none; font-weight: 700; padding: 9px 12px; border-radius: 8px; }
+        @media(max-width:700px){ .agri-intro { margin: 94px 15px 0; padding: 20px; } }
     </style>
 
     <script>
@@ -102,6 +106,11 @@
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KMF5PL5S"
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
+    <section class="agri-intro" aria-labelledby="agri-intro-title">
+      <h1 id="agri-intro-title">농기계 자산 기록부터 보험 확인까지</h1>
+      <p>트랙터·농기계의 명판, 인수 상태, 정비·사고 이력과 계약 확인 사항을 순서대로 정리합니다. 기록부는 브라우저에서 작성해 인쇄할 수 있으며 입력 내용은 서버에 저장하지 않습니다.</p>
+      <nav aria-label="농기계 자료"><a href="/farm-assets/">농기계 자산 기록부</a><a href="/guides/used-farm-machinery-insurance-check/">가입 전 질문표</a><a href="/guides/farm-machinery-incident-record/">사고 후 기록표</a><a href="/method/">자료 작성 기준</a></nav>
+    </section>
     <div id="root"></div>
 
     <script type="text/babel">
@@ -372,41 +381,24 @@
                 <div className="min-h-screen text-gray-900 selection:bg-blue-100 overflow-x-hidden relative">
                     <div className="fixed inset-0 bg-overlay z-[-1]"></div>
                     
-                    <header className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 h-20 flex items-center justify-center border-b border-gray-100 px-6">
-                        <div className="w-full max-w-[500px] flex items-center justify-between">
-                            {/* Header content removed as per request */}
+                    <header className="fixed top-0 w-full bg-white/90 backdrop-blur-md z-50 min-h-20 flex items-center justify-center border-b border-gray-100 px-6">
+                        <div className="w-full max-w-[760px] flex items-center justify-between gap-3 text-sm">
+                            <a href="/" className="font-black text-green-900 whitespace-nowrap">메가푸른에셋</a>
+                            <nav className="flex gap-3 flex-wrap justify-end" aria-label="주요 메뉴"><a href="/farm-assets/">자산 기록부</a><a href="/guides/used-farm-machinery-insurance-check/">가입 전 확인</a><a href="/guides/farm-machinery-incident-record/">사고 기록</a><a href="/method/">작성 기준</a></nav>
                         </div>
                     </header>
 
-                    <main className="w-full max-w-[500px] mx-auto pt-40 pb-20 px-8 text-center">
-                        <div className="animate-fade-in">
-                            <h1 className="text-[40px] font-black leading-[1.3] mb-10 tracking-tight text-gray-900">
-                                보험 가입 조건,<br/>
-                                차근히 확인해 보세요
-                            </h1>
-                            <p className="text-[15px] text-gray-500 font-bold mb-16 leading-relaxed">현재 가입 내역과 새 제안의 약관·보험료·보장 시작일을 함께 확인합니다.</p>
-                            <button 
-                                onClick={scrollToOrder} 
-                                className="w-full bg-blue-600 text-white font-black py-5 rounded-[28px] text-[22px] shadow-2xl shadow-blue-100 active:scale-95 transition-all hover:bg-blue-700 mb-20"
-                            >
-                                보험 상담 신청하기
-                            </button>
-                        </div>
-
-                        <div ref={orderFormRef} className="w-full bg-white border border-gray-100 rounded-[40px] px-8 py-12 shadow-sm mb-12">
-                            <div className="text-center mb-10">
-                                <h2 className="text-[32px] font-black mb-3 tracking-tighter text-gray-900">진단 신청</h2>
-                                <p className="text-gray-400 text-sm font-medium leading-relaxed">보험업법을 준수하며, 전문가가<br/>순차적으로 맞춤 분석을 도와드립니다.</p>
-                            </div>
-                            <OrderForm />
-                        </div>
-
-                        <section className="mb-24 text-left">
+                    <main className="w-full max-w-[760px] mx-auto pt-12 pb-20 px-5 text-center">
+                        <section className="mb-16 text-left">
                             <div className="mb-12">
-                                <h3 className="text-[26px] font-black text-gray-900 mb-2">상담 전에 확인할 자료</h3>
-                                <p className="text-sm text-gray-500">보험증권과 상품설명서·약관을 준비하고, 가입 중인 담보와 새 제안의 조건을 각각 확인하세요.</p>
+                                <h2 className="text-[26px] font-black text-gray-900 mb-2">농기계 상태와 계약을 단계별로 확인</h2>
+                                <p className="text-sm text-gray-500">자산 기록, 인수 전 보험 질문, 사고 후 사실 기록을 구분했습니다. 보험 조건은 현재 증권·약관과 담당 보험사 답변을 기준으로 확인하세요.</p>
                             </div>
                             <div className="space-y-4">
+                                <a href="/farm-assets/" className="block bg-white p-5 rounded-2xl border border-gray-200 hover:border-green-600">
+                                    <strong className="block text-gray-900 mb-1">농기계 자산 기록부</strong>
+                                    <span className="text-sm text-gray-500">명판·인수 상태, 정비·사고 이력과 원본 증빙의 위치를 한 장에 정리</span>
+                                </a>
                                 <a href="/guides/used-farm-machinery-insurance-check/" className="block bg-white p-5 rounded-2xl border border-gray-200 hover:border-blue-500">
                                     <strong className="block text-gray-900 mb-1">중고 농기계 보험 가입 전 확인표</strong>
                                     <span className="text-sm text-gray-500">기계 정보, 담보 범위, 자기부담금, 계약 시작일을 보험사에 물을 때 쓰는 질문표</span>
@@ -417,6 +409,20 @@
                                 </a>
                             </div>
                         </section>
+
+                        <section className="mb-12 text-left bg-white p-6 rounded-2xl border border-gray-200">
+                            <h2 className="text-[24px] font-black text-gray-900 mb-3">보험 상담이 필요한 경우</h2>
+                            <p className="text-sm text-gray-600 leading-relaxed mb-5">가입 가능 기종, 담보·면책, 자기부담금과 보장 시작일은 실제 상품설명서·약관·증권 및 보험사 답변으로 확인하세요. 이 사이트의 기록부는 보험료나 보상금을 산정하지 않습니다.</p>
+                            <button onClick={scrollToOrder} className="w-full bg-blue-600 text-white font-black py-4 rounded-2xl hover:bg-blue-700">보험 상담 신청 화면으로 이동</button>
+                        </section>
+
+                        <div ref={orderFormRef} className="w-full bg-white border border-gray-100 rounded-[32px] px-6 py-10 shadow-sm mb-12">
+                            <div className="text-center mb-10">
+                                <h2 className="text-[28px] font-black mb-3 tracking-tighter text-gray-900">보험 상담 신청</h2>
+                                <p className="text-gray-500 text-sm font-medium leading-relaxed">가입 조건은 상품설명서·약관과 보험사 답변을 함께 확인하세요.</p>
+                            </div>
+                            <OrderForm />
+                        </div>
 
 
                         <section className="mb-24">
@@ -451,8 +457,10 @@
                                     <span className="opacity-20">|</span>
                                     <button onClick={() => setShowEssentialInfo(true)} className="hover:text-blue-600 transition-colors cursor-pointer">[필수안내사항]</button>
                                 </div>
+                                <p className="mb-3 text-[14px]"><a href="/farm-assets/" className="underline hover:text-blue-600">농기계 자산 기록부</a></p>
                                 <p className="mb-3 text-[14px]"><a href="/guides/used-farm-machinery-insurance-check/" className="underline hover:text-blue-600">중고 농기계 보험 가입 전 확인표</a></p>
                                 <p className="mb-6 text-[14px]"><a href="/guides/farm-machinery-incident-record/" className="underline hover:text-blue-600">농기계 사고·침수 후 기록표</a></p>
+                                <p className="mb-6 text-[14px]"><a href="/method/" className="underline hover:text-blue-600">농기계 자산·보험 자료 작성 기준</a></p>
                                 <div className="mt-10 pt-10 border-t border-gray-200 space-y-4 text-[14px] text-gray-500">
                                     <p className="font-black text-gray-900 text-[15px]">[보험 광고 및 계약 관련 필수 고지 사항]</p>
                                     <p>※ 상기 내용은 메가( 주 ) 이정우 의 의견이며, 계약체결에 따른 이익 또는 손실은 보험계약자 등에게 귀속됩니다.</p>
