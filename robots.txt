@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://megapureunasset.kr/sitemap.xml
+#DaumWebMasterTool:202dc511ba82488f4fc724e741cdc6944f0fe7db2c3cc7f4d2d5b9dc8c50d034:dSlZXvWuL7UAVoESNn1QCg==
