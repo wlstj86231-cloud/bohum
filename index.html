@@ -35,7 +35,7 @@
     </script>
 
     <title>농기계 자산 수첩 | 농기계 기록부·인수 점검·사고 기록</title>
-    <link rel="stylesheet" href="/assets/site.css?v=20261026">
+    <link rel="stylesheet" href="/assets/site.css?v=20261026c">
     <style>
         .home-hero { background: linear-gradient(180deg, #ffffff 0%, #f1f8f3 100%); }
         .home-hero h1 { font-size: clamp(1.9rem, 7vw, 2.75rem); }
@@ -73,10 +73,9 @@
         .legal .notices { border-top: 1px solid #e0e4e2; margin-top: 14px; padding-top: 14px; }
         .legal .notices p { margin: 0 0 8px; }
         .legal .copy { border-top: 1px solid #e0e4e2; padding-top: 14px; margin-top: 14px; }
-        .legal .site-links { display: flex; flex-wrap: wrap; gap: 2px 16px; margin: 6px 0 10px; }
-        .legal .site-links a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 700; }
+        .legal + .site-footer { margin-top: 0; }
     </style>
-    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"농기계 자산 수첩","url":"https://megapureunasset.kr/","inLanguage":"ko-KR","description":"농기계마다 기계 정보, 인수 상태, 정비·사고 이력, 보험 확인 메모를 기록하는 브라우저 기록부와 기록 순서 안내","publisher":{"@type":"Organization","name":"제이 미디어(Media)","url":"https://megapureunasset.kr/method/"}},{"@type":"WebPage","name":"농기계 자산 수첩","url":"https://megapureunasset.kr/","inLanguage":"ko-KR","primaryImageOfPage":{"@type":"ImageObject","url":"https://megapureunasset.kr/favicon.svg"}}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://jnewmedia.com/#organization","name":"제이 미디어","alternateName":["J MEDIA","제이미디어","제이 미디어(Media)"],"url":"https://jnewmedia.com/","logo":{"@type":"ImageObject","url":"https://jnewmedia.com/assets/mark.svg"},"address":{"@type":"PostalAddress","streetAddress":"의료원로 80-8, 301호(지곡동)","addressLocality":"군산시","addressRegion":"전북특별자치도","addressCountry":"KR"},"telephone":"+82-10-2846-2011","email":"consultingjinjeong@gmail.com","taxID":"456-33-01705","contactPoint":[{"@type":"ContactPoint","contactType":"customer support","telephone":"+82-10-2846-2011","email":"consultingjinjeong@gmail.com","availableLanguage":"ko"}],"sameAs":["https://www.instagram.com/boribaydotcom/","https://blog.naver.com/plannerset","https://jnewmedia.com/","https://boribay.com/"]},{"@type":"WebSite","@id":"https://megapureunasset.kr/#website","name":"농기계 자산 수첩","url":"https://megapureunasset.kr/","inLanguage":"ko-KR","description":"농기계마다 기계 정보, 인수 상태, 정비·사고 이력, 보험 확인 메모를 기록하는 브라우저 기록부와 기록 순서 안내","publisher":{"@id":"https://jnewmedia.com/#organization"}},{"@type":"WebPage","@id":"https://megapureunasset.kr/#page","url":"https://megapureunasset.kr/","name":"농기계 자산 수첩","description":"트랙터·콤바인 등 농기계마다 기계 정보, 인수 상태, 정비·사고 이력, 보험 확인 메모를 적고 이 기기에 저장·인쇄하는 무료 기록부. 살 때·가입 전·사고 후 기록 순서도 함께 안내합니다.","inLanguage":"ko-KR","isPartOf":{"@id":"https://megapureunasset.kr/#website"},"publisher":{"@id":"https://jnewmedia.com/#organization"},"dateModified":"2026-10-26","about":{"@id":"https://megapureunasset.kr/#website"}}]}</script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5877883031077615" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -86,16 +85,17 @@
     <!-- End Google Tag Manager (noscript) -->
     <a class="skip" href="#main">본문으로 건너뛰기</a>
     <header class="site-header">
-      <div class="bar">
-        <a class="brand" href="/" aria-current="page">농기계 자산 수첩</a>
-        <nav class="site-nav" aria-label="주요 메뉴">
-          <a href="/farm-assets/">자산 기록부</a>
-          <a href="/guides/farm-machinery-purchase-record/">살 때 기록</a>
-          <a href="/guides/used-farm-machinery-insurance-check/">가입 전 질문표</a>
-          <a href="/guides/farm-machinery-incident-record/">사고 후 기록</a>
-        </nav>
-      </div>
-    </header>
+  <div class="bar">
+    <a class="brand" href="/" aria-current="page">농기계 자산 수첩</a>
+    <nav class="site-nav" aria-label="주요 메뉴">
+      <a href="/farm-assets/">자산 기록부</a>
+      <a href="/guides/farm-machinery-purchase-record/">살 때 기록</a>
+      <a href="/guides/farm-machinery-maintenance-log/">정비 기록</a>
+      <a href="/guides/farm-machinery-incident-record/">사고 후 기록</a>
+      <a href="/#guides">자료 전체</a>
+    </nav>
+  </div>
+</header>
 
     <main id="main" class="wrap">
       <section class="card hero home-hero" aria-labelledby="home-title">
@@ -122,20 +122,23 @@
         <p class="small">시세, 보험료, 보상금은 계산하지 않습니다. 보장 여부는 증권·약관과 보험사 안내가 기준입니다.</p>
       </section>
 
-      <section class="card" aria-labelledby="stage-title">
+      <section class="card" id="guides" aria-labelledby="stage-title">
         <h2 id="stage-title">기계를 쓰는 단계마다 기록할 것</h2>
         <div class="grid2">
           <a class="tile" href="/guides/farm-machinery-purchase-record/"><span class="stage-num">살 때</span><strong>중고 농기계 살 때 기록 순서</strong><span>매물 화면 저장, 현장 사진 순서, 계약서에 적을 항목, 운송 전 사진</span></a>
+          <a class="tile" href="/guides/farm-machinery-inspection-by-type/"><span class="stage-num">인수하는 날</span><strong>기종별 인수 점검</strong><span>트랙터·콤바인·이앙기·경운기 점검 항목을 보는 법과 적는 법</span></a>
           <a class="tile" href="/guides/used-farm-machinery-insurance-check/"><span class="stage-num">가입 전</span><strong>보험 가입 전 질문표</strong><span>보험사에 같은 조건으로 물을 7가지와 답변 기록 칸</span></a>
-          <a class="tile" href="/farm-assets/#maintenance"><span class="stage-num">쓰는 동안</span><strong>정비 이력 기록</strong><span>오일 교환 같은 작은 작업도 날짜·계기 시간과 함께</span></a>
+          <a class="tile" href="/guides/farm-machinery-maintenance-log/"><span class="stage-num">쓰는 동안</span><strong>정비 기록과 계절별 관리</strong><span>계기 시간과 함께 적는 법, 봄 점검·장마철·겨울 보관 때 남길 것</span></a>
+          <a class="tile" href="/guides/farm-machinery-safety-rules/"><span class="stage-num">작업할 때</span><strong>농기계 안전 수칙</strong><span>작업 전 점검, 복장, 좁은 농로·경사지·도로 이동, 작업 전 1분 점검표</span></a>
           <a class="tile" href="/guides/farm-machinery-incident-record/"><span class="stage-num">사고 후</span><strong>사고·침수 후 기록 순서</strong><span>안전 조치, 사진 찍는 순서, 접수 때 설명할 사실</span></a>
         </div>
+        <p class="small" style="margin-top:12px">안내는 농촌진흥청 등 공식 자료를 출처와 확인일을 밝혀 정리합니다. 작성 방법은 <a href="/method/">편집 원칙</a>에 있습니다.</p>
       </section>
 
       <section class="card" aria-labelledby="trade-title">
         <h2 id="trade-title">중고 농기계를 사고팔 때</h2>
         <p>정비·사고 이력을 정리해 두면 매물을 올릴 때 설명하기 쉽고, 살 때는 판매자에게 물어볼 것이 분명해집니다. 매물은 <a href="https://boribay.com/?category=MACHINERY&amp;utm_source=megapureunasset.kr&amp;utm_medium=referral&amp;utm_campaign=support">보리장터 중고 농기계 목록</a>에서, 운송 업체는 <a href="https://boribay.com/?category=TRANSPORT&amp;utm_source=megapureunasset.kr&amp;utm_medium=referral&amp;utm_campaign=support">보리장터 운송 업체 목록</a>에서 찾을 수 있습니다. 거래 사진·서류 파일 정리는 <a href="https://goatool.com/agri/guides/used-machinery-handover-files/">거래 증빙 도우미</a>를 쓰세요.</p>
-        <p class="small">보리장터와 거래 증빙 도우미는 이 사이트와 같은 운영자(제이 미디어)의 서비스입니다. 자세한 관계와 작성 기준은 <a href="/method/">운영·작성 기준</a>에 있습니다.</p>
+        <p class="small">보리장터와 거래 증빙 도우미는 이 사이트와 같은 운영자(제이 미디어)의 서비스입니다. 운영자와 관련 사이트의 관계는 <a href="/about/">소개</a>에 있습니다.</p>
       </section>
 
       <section class="card consult" id="consult" aria-labelledby="consult-title">
@@ -181,7 +184,7 @@
       </section>
     </main>
 
-    <footer class="legal">
+    <footer class="legal" aria-label="보험대리점 정보와 보험 광고 고지">
       <div class="inner">
         <p>
           상호명 : 메가주식회사 | 사업자번호 : 128-86-07154 | 대표이사 : 전형노, 송병태<br>
@@ -244,13 +247,6 @@
             <p>※ 메가주식회사 는 금융소비자보호에 관한 법률 및 회사 내부통제기준에 따른 광고 관련 절차를 준수하고 있습니다.</p>
           </div>
         </details>
-        <nav class="site-links" aria-label="사이트 자료">
-          <a href="/farm-assets/">농기계 자산 기록부</a>
-          <a href="/guides/farm-machinery-purchase-record/">중고 농기계 살 때 기록 순서</a>
-          <a href="/guides/used-farm-machinery-insurance-check/">중고 농기계 보험 가입 전 확인표</a>
-          <a href="/guides/farm-machinery-incident-record/">농기계 사고·침수 후 기록표</a>
-          <a href="/method/">농기계 자산·보험 자료 작성 기준</a>
-        </nav>
         <div class="notices">
           <p><strong>[보험 광고 및 계약 관련 필수 고지 사항]</strong></p>
           <p>※ 상기 내용은 메가( 주 ) 이정우 의 의견이며, 계약체결에 따른 이익 또는 손실은 보험계약자 등에게 귀속됩니다.</p>
@@ -267,6 +263,30 @@
         <p class="copy">Copyright © 2026 메가 ( 주 ) 설계사 이정우 All rights reserved.</p>
       </div>
     </footer>
+
+<footer class="site-footer">
+  <div class="inner">
+    <nav aria-label="자료 목록">
+      <a href="/farm-assets/">농기계 자산 기록부</a>
+      <a href="/guides/farm-machinery-purchase-record/">살 때 기록 순서</a>
+      <a href="/guides/farm-machinery-inspection-by-type/">기종별 인수 점검</a>
+      <a href="/guides/farm-machinery-maintenance-log/">정비 기록·계절 관리</a>
+      <a href="/guides/farm-machinery-safety-rules/">농기계 안전 수칙</a>
+      <a href="/guides/used-farm-machinery-insurance-check/">가입 전 질문표</a>
+      <a href="/guides/farm-machinery-incident-record/">사고 후 기록 순서</a>
+    </nav>
+    <nav class="info-links" aria-label="사이트 정보">
+      <a href="/about/">소개</a>
+      <a href="/contact/">문의</a>
+      <a href="/method/">편집 원칙</a>
+      <a href="/corrections/">정정·수정 기록</a>
+      <a href="/privacy/">개인정보처리방침</a>
+      <a href="/terms/">이용약관·면책</a>
+    </nav>
+    <p class="ops">농기계 자산 수첩 운영: 제이 미디어(Media) · 대표 이정우 · 사업자등록번호 456-33-01705 · 고객센터 <a href="tel:010-2846-2011">010-2846-2011</a></p>
+    <p>위 보험 상담 신청과 보험 광고 고지는 고지에 적힌 메가주식회사 보험대리점과 보험설계사 명의로 게시됩니다. 농기계 기록부와 안내 자료는 제이 미디어가 운영하며 보험 상품을 권하거나 보장 여부를 판단하지 않습니다.</p>
+  </div>
+</footer>
 
     <script>
     (function () {

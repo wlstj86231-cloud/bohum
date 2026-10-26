@@ -19,10 +19,28 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://megapureunasset.kr/guides/used-farm-machinery-insurance-check/</loc>
+    <loc>https://megapureunasset.kr/guides/farm-machinery-inspection-by-type/</loc>
     <lastmod>2026-10-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://megapureunasset.kr/guides/farm-machinery-maintenance-log/</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://megapureunasset.kr/guides/farm-machinery-safety-rules/</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://megapureunasset.kr/guides/used-farm-machinery-insurance-check/</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
   <url>
     <loc>https://megapureunasset.kr/guides/farm-machinery-incident-record/</loc>
@@ -31,9 +49,39 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://megapureunasset.kr/about/</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://megapureunasset.kr/contact/</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
     <loc>https://megapureunasset.kr/method/</loc>
     <lastmod>2026-10-26</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://megapureunasset.kr/corrections/</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://megapureunasset.kr/privacy/</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://megapureunasset.kr/terms/</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
   </url>
 </urlset>
