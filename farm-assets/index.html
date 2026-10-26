@@ -3,81 +3,273 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>농기계 자산 기록부: 기계·정비·사고·보험 확인 | 농기계 자산 수첩</title>
-  <meta name="description" content="트랙터와 농기계의 기종·제조번호, 인수 상태, 정비·사고 이력과 보험 확인 사항을 한 장에 기록하고 인쇄하는 농기계 자산 기록부입니다.">
+  <title>농기계 자산 기록부: 인수 점검·정비·사고·보험 메모 | 농기계 자산 수첩</title>
+  <meta name="description" content="트랙터·콤바인·이앙기 등 농기계마다 기계 정보, 인수 상태 점검, 정비 이력, 사고 기록, 보험 확인 메모를 적고 이 기기에 저장·인쇄·백업하는 무료 기록부입니다.">
   <meta name="robots" content="index,follow">
   <link rel="canonical" href="https://megapureunasset.kr/farm-assets/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="농기계 자산 기록부">
+  <meta property="og:description" content="기계 정보, 인수 점검, 정비·사고 이력, 보험 확인 메모를 기계별로 기록하고 인쇄·백업합니다.">
+  <meta property="og:url" content="https://megapureunasset.kr/farm-assets/">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="alternate icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/assets/site.css?v=20261026">
   <style>
-    :root{font-family:"Noto Sans KR","Apple SD Gothic Neo",system-ui,sans-serif;color:#18312c;background:#f3f7f4}*{box-sizing:border-box}body{margin:0;line-height:1.7;word-break:keep-all}main{max-width:920px;margin:auto;padding:20px 18px 65px}a{color:#17644d}.hero,.card{background:#fff;border:1px solid #dce8df;border-radius:14px;padding:24px;margin:18px 0}h1{font-size:clamp(1.9rem,5vw,2.6rem);line-height:1.3;margin:6px 0 13px}h2{font-size:1.35rem;margin:0 0 13px}h3{font-size:1.05rem;margin:0 0 7px}p{margin:0 0 12px}.eyebrow{font-weight:700;color:#2e6e50}.notice{padding:13px 15px;background:#edf6ef;border-left:4px solid #39805b}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.grid article{padding:16px;background:#f8faf8;border:1px solid #dce8df;border-radius:9px}.fields{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.fields label{font-size:.92rem;font-weight:700}.fields input,.fields textarea{width:100%;font:inherit;border:1px solid #adbfaf;border-radius:8px;padding:10px;margin-top:5px;background:#fff}.fields textarea{min-height:75px;resize:vertical}.wide{grid-column:1/-1}.record{width:100%;border-collapse:collapse;font-size:.93rem}.record th,.record td{border:1px solid #ccd9cf;padding:8px;text-align:left;vertical-align:top}.record th{background:#f3f8f4}.record input{width:100%;border:0;font:inherit;min-width:75px}.buttons{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}button{border:0;background:#17644d;color:#fff;border-radius:8px;padding:10px 16px;font:inherit;font-weight:700;cursor:pointer}.secondary{background:#e6f1e9;color:#185137}.small{color:#506158;font-size:.88rem}.links a{display:block;padding:10px 0;border-bottom:1px solid #e2ebe4;font-weight:700}@media(max-width:650px){.grid,.fields{grid-template-columns:1fr}.hero,.card{padding:17px}main{padding:12px 12px 40px}.record{font-size:.78rem}.record th,.record td{padding:4px}.record input{min-width:55px}}@media print{body{background:#fff}main{max-width:none;padding:0}.hero,.card{border:0;padding:4px 0;margin:10px 0}.buttons,.links,nav{display:none}.fields input,.fields textarea{border:0;border-bottom:1px solid #777;border-radius:0}}
+    .toolbar { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: end; }
+    .toolbar .field { margin: 0; }
+    @media (max-width: 680px) { .toolbar { grid-template-columns: 1fr 1fr; } .toolbar .field { grid-column: 1 / -1; } }
+    .jump { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 0; padding: 0; list-style: none; }
+    .jump a { display: inline-flex; align-items: center; min-height: 44px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; background: #fff; text-decoration: none; font-weight: 700; }
+    .sec-num { display: inline-flex; width: 34px; height: 34px; border-radius: 50%; background: var(--brand); color: #fff; align-items: center; justify-content: center; font-size: 1rem; margin-right: 8px; vertical-align: 2px; }
+    #summary-list { list-style: none; padding: 0; margin: 0; }
+    #summary-list li { display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid #e3ece6; }
+    #summary-list li:last-child { border-bottom: 0; }
+    .chip { flex: none; display: inline-block; min-width: 76px; text-align: center; font-size: .9rem; font-weight: 800; padding: 3px 8px; border-radius: 999px; margin-top: 2px; }
+    .sum-warn .chip { background: #fde6d4; color: #8a3a0c; }
+    .sum-todo .chip { background: #e9eef5; color: #2b4565; }
+    .sum-ok .chip { background: #dff1e5; color: #1b5e37; }
+    .check-list { list-style: none; padding: 0; margin: 0; }
+    .check-item { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin: 10px 0; background: #fbfdfb; }
+    .check-item.is-bad { border-color: #d9895a; background: #fff8f2; }
+    .check-item fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+    .check-item legend { font-weight: 700; padding: 0; margin-bottom: 8px; display: flex; gap: 8px; }
+    .num { flex: none; color: var(--muted); min-width: 1.6em; }
+    .segs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-bottom: 8px; }
+    .seg { position: relative; }
+    .seg input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+    .seg span { display: flex; align-items: center; justify-content: center; min-height: 46px; border: 2px solid #b7c9bd; border-radius: 9px; background: #fff; font-weight: 700; cursor: pointer; text-align: center; padding: 4px; }
+    .seg input:focus-visible + span { outline: 3px solid #e2a400; outline-offset: 2px; }
+    .seg-ok input:checked + span { background: #1f6b3f; border-color: #1f6b3f; color: #fff; }
+    .seg-bad input:checked + span { background: #a8430f; border-color: #a8430f; color: #fff; }
+    .seg-na input:checked + span { background: #4f5e57; border-color: #4f5e57; color: #fff; }
+    .note input { min-height: 44px; }
+    .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .photo-list { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .photo-list label.row { display: flex; gap: 10px; align-items: center; min-height: 48px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 10px; background: #fff; cursor: pointer; }
+    @media (max-width: 680px) { .photo-list { grid-template-columns: 1fr; } }
+    .entry { border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin: 12px 0; background: #fbfdfb; }
+    .entry-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 6px; }
+    .entry-head h3 { margin: 0; }
+    .empty { color: var(--muted); background: #f6f9f7; border: 1px dashed #b9cbbf; border-radius: 10px; padding: 14px; }
+    .file-btn { position: relative; overflow: hidden; }
+    .file-btn input { position: absolute; inset: 0; opacity: 0; cursor: pointer; font-size: 0; }
+    #print-view { display: none; }
+    @media print {
+      body > *:not(#print-view) { display: none !important; }
+      #print-view { display: block !important; font-size: 10.5pt; color: #000; }
+      #print-view h1 { font-size: 16pt; margin: 0 0 4pt; }
+      #print-view h2 { font-size: 12.5pt; margin: 12pt 0 4pt; break-after: avoid; }
+      #print-view .pv-meta { font-size: 9pt; color: #333; margin: 0 0 6pt; }
+      #print-view table.pv { width: 100%; border-collapse: collapse; margin: 0 0 6pt; }
+      #print-view table.pv th, #print-view table.pv td { border: 1px solid #555; padding: 3pt 5pt; text-align: left; vertical-align: top; }
+      #print-view table.pv th { width: 26%; background: #eee; }
+      #print-view table.grid th { width: auto; }
+      #print-view table.grid td { height: 18pt; }
+      #print-view tr { break-inside: avoid; }
+      #print-view .pv-photos { font-size: 9.5pt; }
+    }
   </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"농기계 자산 기록부","url":"https://megapureunasset.kr/farm-assets/","applicationCategory":"UtilitiesApplication","operatingSystem":"웹 브라우저","inLanguage":"ko-KR","isAccessibleForFree":true,"description":"농기계마다 기계 정보, 인수 상태 점검, 정비 이력, 사고 기록, 보험 확인 메모를 적고 이 기기에 저장·인쇄·백업하는 기록부","publisher":{"@type":"Organization","name":"제이 미디어(Media)","url":"https://megapureunasset.kr/method/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"농기계 자산 수첩","item":"https://megapureunasset.kr/"},{"@type":"ListItem","position":2,"name":"농기계 자산 기록부","item":"https://megapureunasset.kr/farm-assets/"}]}]}</script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5877883031077615" crossorigin="anonymous"></script>
+  <script defer src="/assets/farm-record.js?v=20261026"></script>
 </head>
 <body>
-<main>
-  <nav aria-label="위치"><a href="/">농기계 자산 수첩</a> / 농기계 자산 기록부</nav>
-  <header class="hero">
-    <p class="eyebrow">농기계 자산 · 상태 기록 도구</p>
-    <h1>농기계 한 대의 상태와 증빙을 한곳에 기록하세요</h1>
-    <p>구입할 때의 상태, 정비와 사고 이력, 보험 계약 확인 사항이 흩어지면 다음 수리·갱신·양도 때 같은 내용을 다시 찾아야 합니다. 이 기록부는 기계별로 사실과 원본 증빙의 위치를 정리하는 인쇄용 양식입니다.</p>
-    <p class="notice"><strong>범위:</strong> 이 페이지는 중고 시세, 감가상각액, 보험가액·보험료 또는 보상금을 계산하지 않습니다. 실제 가입·보장·손해액은 보험사의 상품설명서·약관·증권 및 심사로 확인하세요.</p>
-  </header>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+<header class="site-header">
+  <div class="bar">
+    <a class="brand" href="/">농기계 자산 수첩</a>
+    <nav class="site-nav" aria-label="주요 메뉴">
+      <a href="/farm-assets/" aria-current="page">자산 기록부</a>
+      <a href="/guides/farm-machinery-purchase-record/">살 때 기록</a>
+      <a href="/guides/used-farm-machinery-insurance-check/">가입 전 질문표</a>
+      <a href="/guides/farm-machinery-incident-record/">사고 후 기록</a>
+    </nav>
+  </div>
+</header>
 
-  <section class="card">
-    <h2>기계 식별과 인수 기록</h2>
-    <p class="small">명판 사진과 제조사 제원표의 내용을 대조하세요. 모델명이 비슷해도 제조번호·연식·장착 작업기가 다를 수 있습니다.</p>
-    <div class="fields">
-      <label>기종·모델<input autocomplete="off" placeholder="예: 트랙터 / 모델명"></label>
-      <label>제조번호·명판 위치<input autocomplete="off" placeholder="공개 공유 전 번호 가리기"></label>
-      <label>인수일·인수 장소<input autocomplete="off" placeholder="날짜 / 지역"></label>
-      <label>계기 시간·작동 상태<input autocomplete="off" placeholder="확인 시점과 관찰 내용"></label>
-      <label class="wide">포함된 작업기·부속품<textarea placeholder="종류, 규격, 일련번호, 인도 여부"></textarea></label>
-      <label class="wide">인수 시 확인한 결함·미확인 항목<textarea placeholder="누유, 시동, 유압, 타이어, 전기, 안전장치 등 직접 확인한 사실만"></textarea></label>
-      <label class="wide">원본 증빙 위치<textarea placeholder="계약서, 거래내역, 명판·인수 사진, 제조사 설명서의 보관 위치. 이 화면에 파일을 업로드하지 않습니다."></textarea></label>
+<main id="main" class="wrap">
+  <nav class="crumbs" aria-label="위치"><a href="/">홈</a> › 농기계 자산 기록부</nav>
+
+  <section class="card hero">
+    <p class="eyebrow">기계마다 한 장씩</p>
+    <h1>농기계 자산 기록부</h1>
+    <p class="lead">기계 정보, 인수할 때의 상태, 정비 이력, 사고 기록, 보험 확인 메모를 한곳에 적습니다. 다음 정비·보험 갱신·판매 때 같은 내용을 다시 찾지 않도록 사실과 증빙 위치를 남겨 두는 용도입니다.</p>
+    <p class="notice"><strong>저장 방식:</strong> 입력한 내용은 지금 쓰는 기기의 브라우저에만 자동 저장됩니다. 서버로 보내지 않고, 홈 화면의 보험 상담 신청과도 연결되지 않습니다. 다른 기기에서는 보이지 않으니 <a href="#export">백업 파일</a>을 가끔 내려받아 두세요.</p>
+    <p class="small">이 기록부는 중고 시세, 감가상각, 보험료, 보상금을 계산하거나 판단하지 않습니다. 보장 여부는 증권·약관과 보험사 안내가 기준입니다.</p>
+  </section>
+
+  <p id="nojs" class="warn">이 기록부는 브라우저의 자바스크립트가 켜져 있어야 열립니다. 브라우저 설정에서 자바스크립트를 켠 뒤 다시 열어 주세요. 손으로 적을 종이 양식이 필요하면 자바스크립트를 켠 뒤 "현장용 빈 양식 인쇄"를 누르세요.</p>
+
+  <div id="record-app" hidden>
+    <section class="card" aria-labelledby="pick-title">
+      <h2 id="pick-title" class="sr">기록할 기계 고르기</h2>
+      <div class="toolbar">
+        <label class="field"><span>기록 중인 기계</span><select id="machine-select"></select></label>
+        <button type="button" class="btn secondary" id="add-machine">새 기계 추가</button>
+        <button type="button" class="btn danger" id="delete-machine">이 기계 삭제</button>
+      </div>
+      <p class="small" id="machine-count"></p>
+      <p id="save-status" class="status" role="status" aria-live="polite"></p>
+      <ul class="jump" aria-label="기록부 바로가기">
+        <li><a href="#summary">점검 결과</a></li>
+        <li><a href="#info">1 기계 정보</a></li>
+        <li><a href="#handover">2 인수 점검</a></li>
+        <li><a href="#maintenance">3 정비 이력</a></li>
+        <li><a href="#incidents">4 사고 기록</a></li>
+        <li><a href="#insurance">5 보험 메모</a></li>
+        <li><a href="#export">인쇄·백업</a></li>
+      </ul>
+    </section>
+
+    <section class="card" id="summary" aria-labelledby="summary-title">
+      <h2 id="summary-title">기록 점검 결과</h2>
+      <p class="small">적은 내용을 바탕으로 빠진 곳과 확인할 곳을 알려 줍니다. 입력할 때마다 바뀝니다.</p>
+      <ul id="summary-list" aria-live="polite"></ul>
+    </section>
+
+    <section class="card" id="info" aria-labelledby="info-title">
+      <h2 id="info-title"><span class="sec-num">1</span>기계 정보</h2>
+      <p class="small">명판 사진과 서류를 보며 적으세요. 모델명이 같아도 제조번호·연식·작업기가 다를 수 있습니다.</p>
+      <div class="fields">
+        <label class="field"><span>기종</span>
+          <select data-k="info.type">
+            <option value="">선택</option>
+            <option>트랙터</option><option>콤바인</option><option>이앙기</option><option>동력경운기</option><option>관리기</option>
+            <option>SS분무기</option><option>동력분무기</option><option>광역방제기</option><option>승용제초기</option><option>베일러(결속기)</option>
+            <option>농업용 동력운반차</option><option>농업용 굴삭기</option><option>농업용 로우더</option><option>농업용 지게차</option>
+            <option>농업용 리프트</option><option>농업용 고소작업차</option><option>농업용 파쇄기</option><option>농업용 드론</option><option>농업용 무인헬기</option>
+            <option>곡물건조기</option><option value="기타">기타(직접 입력)</option>
+          </select>
+        </label>
+        <label class="field" id="type-etc-box" hidden><span>기종 직접 입력</span><input type="text" data-k="info.typeEtc" maxlength="300"></label>
+        <label class="field"><span>제조사</span><input type="text" data-k="info.maker" maxlength="300" autocomplete="off"></label>
+        <label class="field"><span>모델명</span><input type="text" data-k="info.model" maxlength="300" autocomplete="off"></label>
+        <label class="field"><span>제조연도(명판 기준)</span><input type="text" data-k="info.year" maxlength="300" inputmode="numeric" placeholder="예: 2019"></label>
+        <label class="field"><span>제조번호(차대번호)</span><input type="text" data-k="info.serial" maxlength="300" autocomplete="off"><small>공개 게시판에 올릴 때는 일부를 가리세요.</small></label>
+        <label class="field"><span>엔진번호(선택)</span><input type="text" data-k="info.engineNo" maxlength="300" autocomplete="off"></label>
+        <label class="field"><span>마력·규격</span><input type="text" data-k="info.spec" maxlength="300" placeholder="예: 55마력 / 4조식"></label>
+        <label class="field"><span>구입(인수)일</span><input type="date" data-k="info.acquiredOn"></label>
+        <label class="field"><span>구입 경로</span>
+          <select data-k="info.acquiredHow"><option value="">선택</option><option>신품 구입</option><option>중고 직거래</option><option>중고 판매업체</option><option>상속·증여</option><option>기타</option></select>
+        </label>
+        <label class="field"><span>판매처·거래 상대</span><input type="text" data-k="info.acquiredFrom" maxlength="300" placeholder="상호 또는 거래한 곳"></label>
+        <label class="field"><span>지급 금액(원)</span><input type="text" data-k="info.price" maxlength="300" inputmode="numeric" placeholder="계약서·이체 기록 기준"><small>지급한 금액일 뿐 현재 시세나 보험가입금액이 아닙니다.</small></label>
+        <label class="field"><span>보관 장소</span><input type="text" data-k="info.storage" maxlength="300" placeholder="예: 집 뒤 창고"></label>
+        <label class="field wide"><span>작업기·부속품</span><textarea data-k="info.attachments" maxlength="2000" placeholder="종류, 규격, 일련번호, 함께 받았는지"></textarea></label>
+        <label class="field wide"><span>원본 증빙 보관 위치</span><textarea data-k="info.docs" maxlength="2000" placeholder="계약서, 이체 기록, 명판·인수 사진, 사용설명서, 보증서를 어디에 두었는지. 이 화면에는 파일을 올리지 않습니다."></textarea></label>
+        <label class="field wide"><span>메모</span><textarea data-k="info.memo" maxlength="2000"></textarea></label>
+      </div>
+    </section>
+
+    <section class="card" id="handover" aria-labelledby="handover-title">
+      <h2 id="handover-title"><span class="sec-num">2</span>인수 상태 점검</h2>
+      <p>인수하는 날 직접 본 것만 표시하세요. 시동을 걸어 보지 못했거나 작업기가 없어 확인하지 못한 항목은 "확인 못 함"으로 남기는 것이 정확합니다. 점검·정비는 엔진이 식은 뒤 평평하고 환기가 잘 되는 곳에서 하세요.</p>
+      <div class="fields">
+        <label class="field"><span>점검일</span><input type="date" data-k="handover.date"></label>
+        <label class="field"><span>점검 장소</span><input type="text" data-k="handover.place" maxlength="300"></label>
+        <label class="field"><span>점검 때 계기 시간(시간)</span><input type="text" data-k="handover.hours" maxlength="300" inputmode="decimal" placeholder="예: 1180"></label>
+      </div>
+      <p class="small" id="check-type-note"></p>
+      <ol class="check-list" id="check-list"></ol>
+      <h3>인수 사진을 찍었는지</h3>
+      <p class="small">순서대로 찍으면 빠뜨리는 것이 줄어듭니다. 찍은 항목에 표시하세요(사진 파일은 이 화면에 올리지 않습니다).</p>
+      <ul class="photo-list" id="photo-list"></ul>
+      <label class="field"><span>인수 때 합의·특이사항</span><textarea data-k="handover.memo" maxlength="2000" placeholder="판매자가 알려 준 수리·사고·침수 이력, 고쳐 주기로 한 것, 함께 받기로 한 물건"></textarea></label>
+      <p class="small">현장 순서와 계약서에 적을 내용은 <a href="/guides/farm-machinery-purchase-record/">중고 농기계 살 때 기록 순서</a>에 정리했습니다. 점검 항목 일부는 농촌진흥청 자료를 참고했습니다(아래 근거 참고).</p>
+    </section>
+
+    <section class="card" id="maintenance" aria-labelledby="maint-title">
+      <h2 id="maint-title"><span class="sec-num">3</span>정비 이력</h2>
+      <p>날짜와 계기 시간, 실제로 한 작업을 적고 영수증·사진이 어디 있는지 연결해 두세요.</p>
+      <div id="maint-list"></div>
+      <div class="actions"><button type="button" class="btn secondary" id="add-maint">정비 기록 추가</button></div>
+    </section>
+
+    <section class="card" id="incidents" aria-labelledby="inc-title">
+      <h2 id="inc-title"><span class="sec-num">4</span>사고 기록</h2>
+      <p class="warn">사람이 다쳤거나 기계가 불안정하면 기록보다 구조 요청(119)과 안전 조치가 먼저입니다. 정리된 뒤 확인한 사실만 적으세요. 순서는 <a href="/guides/farm-machinery-incident-record/">사고·침수 후 기록 순서</a>를 참고하세요.</p>
+      <div id="inc-list"></div>
+      <div class="actions"><button type="button" class="btn secondary" id="add-inc">사고 기록 추가</button></div>
+    </section>
+
+    <section class="card" id="insurance" aria-labelledby="ins-title">
+      <h2 id="ins-title"><span class="sec-num">5</span>보험 확인 메모</h2>
+      <p>증권과 약관에 적힌 표현을 그대로 옮겨 적으세요. 이 메모는 보장 여부를 판단하지 않으며, 구입 가격과 보험가입금액이 같다고 가정하지 않습니다.</p>
+      <div class="fields">
+        <label class="field"><span>보험사</span><input type="text" data-k="insurance.insurer" maxlength="300"></label>
+        <label class="field"><span>상품명(증권 표기)</span><input type="text" data-k="insurance.product" maxlength="300"></label>
+        <label class="field"><span>증권번호</span><input type="text" data-k="insurance.policyNo" maxlength="300" autocomplete="off"></label>
+        <label class="field"><span>사고 접수 창구·연락처</span><input type="text" data-k="insurance.claimContact" maxlength="300" placeholder="증권·보험사 안내에 적힌 곳"></label>
+        <label class="field"><span>보험기간 시작일</span><input type="date" data-k="insurance.start"></label>
+        <label class="field"><span>보험기간 종료일</span><input type="date" data-k="insurance.end"></label>
+        <label class="field wide"><span>가입 담보(증권에 적힌 그대로)</span><textarea data-k="insurance.coverage" maxlength="2000"></textarea></label>
+        <label class="field"><span>자기부담금(증권·약관 표기)</span><input type="text" data-k="insurance.deductible" maxlength="300"></label>
+        <label class="field"><span>작업기·부속품 포함 여부</span><input type="text" data-k="insurance.implCovered" maxlength="300" placeholder="보험사에 확인한 답"></label>
+        <label class="field wide"><span>메모</span><textarea data-k="insurance.memo" maxlength="2000" placeholder="변경 신고가 필요한 경우(작업기 추가, 소유자 변경 등)에 대해 들은 안내"></textarea></label>
+      </div>
+      <h3>보험사·창구에 물어본 것</h3>
+      <div id="qa-list"></div>
+      <div class="actions"><button type="button" class="btn secondary" id="add-qa">문의 기록 추가</button></div>
+    </section>
+
+    <section class="card" id="export" aria-labelledby="export-title">
+      <h2 id="export-title">인쇄·백업</h2>
+      <div class="actions">
+        <button type="button" class="btn" id="print-record">이 기계 기록 인쇄</button>
+        <button type="button" class="btn secondary" id="print-blank">현장용 빈 양식 인쇄</button>
+      </div>
+      <p class="small">인쇄 화면에서 "PDF로 저장"을 고르면 파일로도 남길 수 있습니다. 빈 양식은 현장에서 손으로 적을 때 씁니다.</p>
+      <div class="actions">
+        <button type="button" class="btn secondary" id="export-json">백업 파일 내려받기(JSON)</button>
+        <button type="button" class="btn secondary" id="export-csv">표 파일 내려받기(CSV)</button>
+        <label class="btn secondary file-btn">백업 파일 불러오기<input type="file" id="import-json" accept=".json,application/json"></label>
+      </div>
+      <p class="small">백업 파일에는 이 기기에 있는 모든 기계 기록이 들어 있어 새 휴대폰이나 다른 컴퓨터에서 불러올 수 있습니다. 표 파일은 지금 고른 기계의 기록을 엑셀에서 보는 용도입니다. 불러올 때 같은 기계 기록은 백업 내용으로 바뀝니다.</p>
+      <p id="export-status" class="status" role="status" aria-live="polite"></p>
+      <details>
+        <summary>이 기기의 기록 모두 지우기</summary>
+        <p class="small">함께 쓰는 컴퓨터라면 작업을 마친 뒤 백업 파일을 받고 기록을 지우세요.</p>
+        <button type="button" class="btn danger" id="clear-all">이 기기의 농기계 기록 모두 지우기</button>
+      </details>
+    </section>
+  </div>
+
+  <section class="card next" aria-labelledby="next-title">
+    <h2 id="next-title">기록을 쓰는 다음 단계</h2>
+    <div class="grid2">
+      <a class="tile" href="/guides/farm-machinery-purchase-record/"><strong>살 때: 사진·서류 기록 순서</strong><span>매물 확인부터 인수·운송까지 남길 것</span></a>
+      <a class="tile" href="/guides/used-farm-machinery-insurance-check/"><strong>가입 전: 보험 질문표</strong><span>보험사에 같은 조건으로 물을 7가지와 답변 칸</span></a>
+      <a class="tile" href="/guides/farm-machinery-incident-record/"><strong>사고 후: 기록 순서</strong><span>안전 조치, 사진 순서, 접수 때 설명할 사실</span></a>
+      <a class="tile" href="https://goatool.com/agri/guides/used-machinery-handover-files/"><strong>사진·서류 파일 정리</strong><span>거래 증빙 도우미의 농기계 인도 파일 순서</span></a>
     </div>
+    <p style="margin-top:14px">이 기계를 팔 계획이라면 인쇄한 정비·사고 이력을 매수자에게 보여 줄 수 있습니다. 판매 준비는 <a href="https://boribay.com/guides/used-machinery-selling-checklist?utm_source=megapureunasset.kr&amp;utm_medium=referral&amp;utm_campaign=support">보리장터 중고 농기계 판매 준비표</a>, 매물 확인은 <a href="https://boribay.com/?category=MACHINERY&amp;utm_source=megapureunasset.kr&amp;utm_medium=referral&amp;utm_campaign=support">보리장터 중고 농기계 목록</a>에서 할 수 있습니다. 보리장터와 거래 증빙 도우미는 이 사이트와 같은 운영자(제이 미디어)의 서비스입니다.</p>
   </section>
 
-  <section class="card">
-    <h2>정비·손상 이력</h2>
-    <p>날짜와 실제 작업 내용을 남기고 영수증·사진 원본의 위치를 연결합니다. 추정 원인은 확인된 사실과 나눠 적으세요.</p>
-    <table class="record"><thead><tr><th scope="col">날짜·계기 시간</th><th scope="col">관찰·정비·사고 사실</th><th scope="col">업체·증빙 위치</th><th scope="col">후속 확인</th></tr></thead><tbody id="history"><tr><td><input aria-label="날짜와 계기 시간"></td><td><input aria-label="관찰 및 작업 내용"></td><td><input aria-label="업체와 증빙 위치"></td><td><input aria-label="후속 확인 사항"></td></tr></tbody></table>
-    <div class="buttons"><button type="button" class="secondary" id="add-row">기록 행 추가</button></div>
-    <p class="small">사고·침수 직후에는 안전 확보가 우선입니다. 상세 기록 순서는 <a href="/guides/farm-machinery-incident-record/">농기계 사고·침수 기록표</a>를 사용하세요.</p>
-  </section>
-
-  <section class="card">
-    <h2>보험·비용은 서로 다른 숫자로 관리</h2>
-    <div class="grid">
-      <article><h3>구입·수리 지출</h3><p>계약서·영수증으로 실제 지급한 금액과 날짜를 기록합니다. 이 값만으로 현재 중고 시세나 장부가액을 계산하지 않습니다.</p></article>
-      <article><h3>보험 계약</h3><p>증권의 계약자, 대상 기종·작업기, 가입 담보, 기간, 자기부담금, 변경 신고 필요 여부를 보험사에 확인합니다. 구입가격과 보험가입금액은 같다고 가정하지 않습니다.</p></article>
-    </div>
-    <div class="fields" style="margin-top:15px">
-      <label>보험사·증권 확인일<input autocomplete="off" placeholder="회사 / 담당 창구 / 날짜"></label>
-      <label>보장 시작·종료일<input autocomplete="off" placeholder="증권에 표시된 기간"></label>
-      <label class="wide">담보·면책·작업기 질문과 답변<textarea placeholder="약관 조항 또는 보험사 답변을 함께 적기"></textarea></label>
-    </div>
-    <p class="small">인수 전 보험 질문은 <a href="/guides/used-farm-machinery-insurance-check/">중고 농기계 보험 확인표</a>를 참고하세요. 보험 계약 유무가 기계 상태나 거래 상대방의 권한을 보증하지 않습니다.</p>
-  </section>
-
-  <section class="card">
-    <h2>자료의 근거와 사용 범위</h2>
-    <p>농림축산식품부의 <a href="https://www.mafra.go.kr/bbs/home/792/571306/artclView.do">농기계종합보험 가입 기종 확대 안내</a>(2024-08-26)는 제도의 당시 범위를 설명합니다. 현재 본인 계약에 적용되는 기종·사고 유형·면책은 보험사 최신 자료에서 다시 확인해야 합니다. 공식 자료 확인일: 2026-09-27.</p>
-    <p class="small">입력한 내용은 이 화면에서만 유지되며 서버에 저장·전송되지 않습니다. 새로고침 시 사라질 수 있습니다. 공유용 사본에는 제조번호, 주소, 연락처 등 개인정보를 가리세요.</p>
-    <div class="buttons"><button type="button" onclick="window.print()">기록부 인쇄</button></div>
-  </section>
-
-  <section class="card links">
-    <h2>기계의 다른 단계</h2>
-    <a href="/guides/used-farm-machinery-insurance-check/">인수 전: 가입 가능 여부와 계약 시작일 질문</a>
-    <a href="/guides/farm-machinery-incident-record/">사고 후: 현장 사실과 접수 내용 기록</a>
-    <a href="/">농기계 자산 수첩 홈으로 돌아가기</a>
+  <section class="card" aria-labelledby="src-title">
+    <h2 id="src-title">점검 항목의 근거와 확인일</h2>
+    <ul class="sources">
+      <li>농촌진흥청 보도자료 <a href="https://rda.go.kr/board/board.do?dataNo=100000809513&amp;mode=view&amp;prgId=day_farmprmninfoEntry">「농번기 안전, 농기계 자가 정비부터 ‘기종별 점검 요령은?’」</a>(2026-04-25): 배터리 단자·충전 상태, 엔진이 식은 뒤 평평하고 환기되는 곳에서 점검, 트랙터·이앙기·콤바인 기종별 점검 항목.</li>
+      <li>농촌진흥청 그린매거진 <a href="https://rda.go.kr/webzine/2025/03/sub_12.html">「안전하고 슬기로운 농촌 생활」</a>(2025년 3월, 자료: 농업인 안전 365): 사용 전 긴급정지 장치 점검, 회전부 방호 덮개, 야간 반사판·등화장치, 주정차 때 주차 브레이크.</li>
+      <li>농촌진흥청 그린매거진 <a href="https://www.rda.go.kr/webzine/2021/03/sub2-3.html">「경운기 사고와 안전수칙」</a>(2021년 3월): 경운기 사용 전 회전체 덮개·전선 절연·배전반 덮개 점검.</li>
+      <li>기종 목록은 <a href="https://www.nhfire.co.kr/product/retrieveProduct.nhfire?pdtCd=G610110">NH농협손해보험 농기계종합보험 상품 안내</a>에 나온 기종 이름을 참고해 고르기 쉽게 정리했습니다. 목록에 있다고 해서 가입·보장이 정해지는 것은 아닙니다.</li>
+    </ul>
+    <p class="small">자료 확인일: 2026-10-26. 점검 항목은 기록을 돕는 체크리스트이며 기계 안전 인증이나 정비 진단을 대신하지 않습니다. 기종별 정비 주기와 방법은 제조사 사용설명서를 따르세요. 작성 기준은 <a href="/method/">운영·작성 기준</a>에 있습니다.</p>
   </section>
 </main>
-<script>
-  document.getElementById('add-row').addEventListener('click', () => {
-    const row = document.querySelector('#history tr').cloneNode(true);
-    row.querySelectorAll('input').forEach(input => { input.value = ''; });
-    document.getElementById('history').appendChild(row);
-  });
-</script>
+
+<footer class="site-footer">
+  <div class="inner">
+    <nav aria-label="사이트 메뉴">
+      <a href="/">홈</a>
+      <a href="/farm-assets/">농기계 자산 기록부</a>
+      <a href="/guides/farm-machinery-purchase-record/">살 때 기록 순서</a>
+      <a href="/guides/used-farm-machinery-insurance-check/">가입 전 질문표</a>
+      <a href="/guides/farm-machinery-incident-record/">사고 후 기록 순서</a>
+      <a href="/method/">운영·작성 기준</a>
+    </nav>
+    <p>농기계 자산 수첩 · 운영: 제이 미디어(Media), 보리장터 운영사 · 기록부 입력 내용은 이 기기에만 저장됩니다.</p>
+  </div>
+</footer>
+<div id="print-view" aria-hidden="true"></div>
 </body>
 </html>
