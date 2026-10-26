@@ -35,29 +35,39 @@
         say('이 기기에 저장해 둔 내용을 불러왔습니다.');
       } catch (e) { /* 손상된 저장값은 무시 */ }
     }
+    function saveNow() {
+      clearTimeout(timer);
+      timer = null;
+      if (store(false, key, JSON.stringify(collect()))) {
+        var d = new Date();
+        say('이 기기에 저장됨 · ' + pad(d.getHours()) + ':' + pad(d.getMinutes()));
+      } else say('이 브라우저에서는 저장되지 않습니다. 필요하면 인쇄해 두세요.', true);
+    }
     function save() {
       clearTimeout(timer);
-      timer = setTimeout(function () {
-        if (store(false, key, JSON.stringify(collect()))) {
-          var d = new Date();
-          say('이 기기에 저장됨 · ' + pad(d.getHours()) + ':' + pad(d.getMinutes()));
-        } else say('이 브라우저에서는 저장되지 않습니다. 필요하면 인쇄해 두세요.', true);
-      }, 400);
+      timer = setTimeout(saveNow, 400);
     }
+    function flush() { if (timer) saveNow(); }
     form.addEventListener('input', save);
     form.addEventListener('change', save);
+    window.addEventListener('pagehide', flush);
+    window.addEventListener('beforeunload', flush);
+    document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') flush(); });
     form.addEventListener('submit', function (e) { e.preventDefault(); });
     var printBtn = form.querySelector('[data-sheet-print]');
     if (printBtn) printBtn.addEventListener('click', function () { window.print(); });
     var clearBtn = form.querySelector('[data-sheet-clear]');
     if (clearBtn) clearBtn.addEventListener('click', function () {
       if (!window.confirm('이 페이지에 적은 체크와 메모를 지울까요?')) return;
+      clearTimeout(timer);
+      timer = null;
       form.reset();
       store(false, key, null);
       say('지웠습니다.');
     });
     var sendBtn = form.querySelector('[data-send-qa]');
     if (sendBtn) sendBtn.addEventListener('click', function () {
+      flush();
       var who = (form.querySelector('[name="who"]') || {}).value || '';
       var date = (form.querySelector('[name="asked"]') || {}).value || today();
       var items = [];
@@ -68,18 +78,28 @@
       if (!items.length) { say('보낼 답변이 없습니다. 답변 칸에 들은 내용을 먼저 적어 주세요.', true); return; }
       var raw = store(true, RECORD_KEY);
       var state = null;
-      try { state = raw ? JSON.parse(raw) : null; } catch (e) { state = null; }
-      if (!state || !Array.isArray(state.machines) || !state.machines.length) {
-        var id = uid();
-        state = { app: 'farm-asset-record', version: 1, activeId: id, lastExportAt: '', machines: [{ id: id, info: {}, handover: { checks: {}, notes: {}, photos: {} }, maintenance: [], incidents: [], insurance: { qa: [] } }] };
+      try { state = raw ? JSON.parse(raw) : null; } catch (e) { state = false; }
+      if (raw && (!state || typeof state !== 'object' || !Array.isArray(state.machines) || (state.version && state.version > 1))) {
+        say('기록부에 저장된 내용을 읽지 못해 보내지 않았습니다. 기록부를 먼저 열어 확인해 주세요. 적은 답변은 이 페이지에 그대로 있습니다.', true);
+        return;
       }
-      var m = state.machines.filter(function (x) { return x && x.id === state.activeId; })[0] || state.machines[0];
+      var now = new Date().toISOString();
+      var valid = state ? state.machines.filter(function (x) { return x && typeof x === 'object' && !Array.isArray(x) && x.id; }) : [];
+      if (!valid.length) {
+        var id = uid();
+        state = state || { app: 'farm-asset-record', version: 1, lastExportAt: '' };
+        state.activeId = id;
+        state.machines = [{ id: id, createdAt: now, updatedAt: now, info: {}, handover: { checks: {}, notes: {}, photos: {} }, maintenance: [], incidents: [], insurance: { qa: [] } }];
+        valid = state.machines;
+      }
+      var m = valid.filter(function (x) { return x.id === state.activeId; })[0] || valid[0];
       state.activeId = m.id;
-      m.insurance = m.insurance || {};
+      m.updatedAt = now;
+      m.insurance = (m.insurance && typeof m.insurance === 'object') ? m.insurance : {};
       m.insurance.qa = Array.isArray(m.insurance.qa) ? m.insurance.qa : [];
       var added = 0;
       items.forEach(function (it) {
-        var dup = m.insurance.qa.some(function (x) { return x.q === it.q && x.a === it.a; });
+        var dup = m.insurance.qa.some(function (x) { return x && x.q === it.q && x.a === it.a; });
         if (!dup) { m.insurance.qa.push({ id: uid(), date: date, who: String(who).slice(0, 300), q: it.q, a: it.a }); added++; }
       });
       if (!store(false, RECORD_KEY, JSON.stringify(state))) { say('이 브라우저에서는 저장이 막혀 있어 기록부로 보낼 수 없습니다.', true); return; }

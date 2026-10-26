@@ -166,15 +166,55 @@
 
   /* 저장소 */
   var storageOK = true;
-  function loadState() {
-    var raw = null;
-    try { raw = window.localStorage.getItem(KEY); } catch (e) { storageOK = false; }
-    var data = null;
-    if (raw) { try { data = JSON.parse(raw); } catch (e) { data = null; } }
-    var machines = data && Array.isArray(data.machines) ? data.machines.map(normMachine) : [];
+  var loadNote = '';
+  var dirty = {};   /* 이 창에서 고쳤지만 아직 저장하지 않은 기계 id */
+  var removed = {}; /* 이 창에서 지웠지만 아직 저장하지 않은 기계 id */
+  var lastSeen = null; /* 이 창이 마지막으로 읽거나 쓴 저장값 */
+  function readRaw() {
+    try { return window.localStorage.getItem(KEY); } catch (e) { storageOK = false; return null; }
+  }
+  /* null: 저장된 것 없음, false: 읽을 수 없음, 객체: 정상 */
+  function parseState(raw) {
+    if (!raw) return null;
+    var d;
+    try { d = JSON.parse(raw); } catch (e) { return false; }
+    if (!d || typeof d !== 'object' || !Array.isArray(d.machines) || (d.version && d.version > 1)) return false;
+    return d;
+  }
+  /* 읽을 수 없는 저장값은 덮어쓰지 않고 다른 이름으로 남겨 둡니다. */
+  function keepUnreadable(raw) {
+    try {
+      for (var i = 0; i < window.localStorage.length; i++) {
+        var k = window.localStorage.key(i);
+        if (k && k.indexOf(KEY + '-unreadable-') === 0 && window.localStorage.getItem(k) === raw) return true;
+      }
+      window.localStorage.setItem(KEY + '-unreadable-' + Date.now(), raw);
+      return true;
+    } catch (e) { return false; }
+  }
+  function normMachines(data) {
+    var seen = {};
+    var machines = data ? data.machines.map(normMachine) : [];
+    machines.forEach(function (m) { if (seen[m.id]) m.id = uid(); seen[m.id] = true; });
+    return machines;
+  }
+  function buildState(data) {
+    var machines = normMachines(data);
     if (!machines.length) machines = [blankMachine()];
     var active = data && machines.some(function (m) { return m.id === data.activeId; }) ? data.activeId : machines[0].id;
     return { app: APP, version: 1, activeId: active, machines: machines, lastExportAt: str(data && data.lastExportAt, 40) };
+  }
+  function loadState() {
+    var raw = readRaw();
+    lastSeen = raw;
+    var data = parseState(raw);
+    if (data === false) {
+      loadNote = keepUnreadable(raw)
+        ? '이 기기에 저장돼 있던 기록을 읽지 못해 지우지 않고 따로 보관해 두었습니다. 백업 파일이 있으면 아래에서 불러오세요.'
+        : '이 기기에 저장돼 있던 기록을 읽지 못했습니다. 백업 파일이 있으면 아래에서 불러오세요.';
+      data = null;
+    }
+    return buildState(data);
   }
   var state = loadState();
   var saveTimer = null;
@@ -186,19 +226,64 @@
     el.textContent = msg;
     el.className = 'status' + (isErr ? ' err' : '');
   }
+  /* 다른 창이 저장한 내용(latest)과 이 창의 내용을 기계별로 합칩니다.
+     양쪽에 있는 기계는 아직 저장 안 한 쪽 또는 더 나중에 고친 쪽을 남기고,
+     이 창에만 있는 기계는 아직 저장 안 한 새 기계일 때만, 이 창에서 지운 기계는 빼고 남깁니다.
+     이 창 쪽 내용을 남긴 것이 있으면 true(다시 저장 필요)를 돌려줍니다. */
+  function mergeWith(latest) {
+    var mine = {};
+    var localWins = false;
+    state.machines.forEach(function (m) { mine[m.id] = m; });
+    var base = [];
+    normMachines(latest).forEach(function (x) {
+      if (removed[x.id]) { localWins = true; return; }
+      var m = mine[x.id];
+      delete mine[x.id];
+      if (m && (dirty[m.id] || str(m.updatedAt) > str(x.updatedAt))) {
+        base.push(m);
+        if (str(m.updatedAt) !== str(x.updatedAt)) localWins = true;
+      } else base.push(x);
+    });
+    state.machines.forEach(function (m) { if (mine[m.id] && dirty[m.id]) { base.push(m); localWins = true; } });
+    if (!base.length) base = [blankMachine()];
+    var active = state.activeId;
+    if (!base.some(function (m) { return m.id === active; })) {
+      active = latest && base.some(function (m) { return m.id === latest.activeId; }) ? latest.activeId : base[0].id;
+    }
+    state.machines = base;
+    state.activeId = active;
+    if (latest && str(latest.lastExportAt) > str(state.lastExportAt)) state.lastExportAt = str(latest.lastExportAt, 40);
+    return localWins;
+  }
   function saveNow() {
     clearTimeout(saveTimer);
-    if (!storageOK) { setStatus('이 브라우저에서는 자동 저장이 되지 않습니다. 작성 후 반드시 백업 파일로 내려받으세요.', true); return; }
+    saveTimer = null;
+    if (!storageOK) { setStatus('이 브라우저에서는 자동 저장이 되지 않습니다. 작성 후 반드시 백업 파일로 내려받으세요.', true); return false; }
     try {
-      window.localStorage.setItem(KEY, JSON.stringify(state));
+      var raw = window.localStorage.getItem(KEY);
+      if (raw !== lastSeen) {
+        var latest = parseState(raw);
+        if (latest === false) keepUnreadable(raw);
+        else { mergeWith(latest); renderMachineSelect(); }
+      }
+      var text = JSON.stringify(state);
+      window.localStorage.setItem(KEY, text);
+      lastSeen = text;
+      dirty = {};
+      removed = {};
       var d = new Date();
       setStatus('이 기기에 저장됨 · ' + pad(d.getHours()) + ':' + pad(d.getMinutes()));
+      return true;
     } catch (e) {
       setStatus('저장 공간이 부족하거나 저장이 막혀 있습니다. 백업 파일로 내려받아 두세요.', true);
+      return false;
     }
   }
+  /* 창을 닫거나 새로고침하기 직전, 다른 앱으로 넘어갈 때 남은 입력을 바로 저장 */
+  function flushSave() { if (saveTimer) saveNow(); }
   function scheduleSave() {
     current().updatedAt = new Date().toISOString();
+    dirty[current().id] = true;
     setStatus('저장 중…');
     clearTimeout(saveTimer);
     saveTimer = setTimeout(saveNow, 400);
@@ -405,7 +490,13 @@
       var badCost = maint.filter(function (r) { return r.cost && num(r.cost) === null; }).length;
       if (badCost) add('warn', '비용 칸 ' + badCost + '곳에 숫자가 아닌 글자가 있어 합계에서 뺐습니다. 금액은 숫자만 적어 주세요(쉼표는 괜찮습니다).');
       if (hHours !== null) {
-        var lower = maint.filter(function (r) { var h = num(r.hours); return h !== null && h < hHours; }).length;
+        var hDate = parseDate(m.handover.date) || parseDate(info.acquiredOn);
+        var lower = maint.filter(function (r) {
+          var h = num(r.hours);
+          if (h === null || h >= hHours) return false;
+          var d = parseDate(r.date);
+          return !(hDate && d && d < hDate); /* 인수 전 날짜(이전 소유자)의 기록은 빼고 셉니다 */
+        }).length;
         if (lower) add('warn', '정비 기록 ' + lower + '건의 계기 시간이 인수 때(' + esc(m.handover.hours) + '시간)보다 작습니다. 입력 실수인지, 계기판을 교체했는지 확인해 메모해 두세요.');
       }
     }
@@ -579,24 +670,51 @@
       var data;
       try { data = JSON.parse(String(reader.result).replace(/^﻿/, '')); } catch (e) { setExportMsg('백업 파일을 읽지 못했습니다. 이 기록부에서 내려받은 .json 파일을 골라 주세요.', true); return; }
       if (!data || data.app !== APP || !Array.isArray(data.machines)) { setExportMsg('농기계 자산 기록부의 백업 파일이 아닙니다. 표 파일(CSV)은 불러올 수 없습니다.', true); return; }
-      var incoming = data.machines.slice(0, 200).map(normMachine);
-      if (!incoming.length) { setExportMsg('백업 파일에 기계 기록이 없습니다.', true); return; }
+      var seen = {};
+      var incoming = data.machines.slice(0, 200).filter(function (x) {
+        return x && typeof x === 'object' && !Array.isArray(x);
+      }).map(normMachine).filter(function (m) { return !isEmptyMachine(m); });
+      incoming.forEach(function (m) { if (seen[m.id]) m.id = uid(); seen[m.id] = true; });
+      if (!incoming.length) { setExportMsg('백업 파일에 불러올 기계 기록이 없습니다. 이 기기의 기록은 그대로입니다.', true); return; }
+      var same = incoming.filter(function (m) { return findMachine(m.id); });
+      var changed = same.filter(function (m) { return contentOf(findMachine(m.id)) !== contentOf(m); });
+      if (changed.length) {
+        var newer = changed.filter(function (m) { return str(findMachine(m.id).updatedAt) > str(m.updatedAt); }).length;
+        var ask = '백업 파일의 기계 ' + changed.length + '대는 이 기기에 이미 있는 기록이며 내용이 다릅니다. 불러오면 이 기기의 내용이 백업 내용으로 바뀝니다.' +
+          (newer ? ' 그중 ' + newer + '대는 이 기기의 기록이 백업보다 나중에 고쳐져 있어, 최근에 고친 내용이 사라집니다.' : '') + ' 계속할까요?';
+        if (!window.confirm(ask)) { setExportMsg('불러오기를 취소했습니다. 이 기기의 기록은 그대로입니다.'); return; }
+      }
       var replaced = 0;
+      var importedAt = new Date().toISOString();
       incoming.forEach(function (m) {
+        m.updatedAt = importedAt;
         var idx = -1;
         state.machines.forEach(function (x, i) { if (x.id === m.id) idx = i; });
         if (idx >= 0) { state.machines[idx] = m; replaced++; } else state.machines.push(m);
+        dirty[m.id] = true;
       });
-      state.machines = state.machines.filter(function (m, i) {
-        return !(state.machines.length > 1 && isEmptyMachine(m) && incoming.indexOf(m) < 0);
+      state.machines = state.machines.filter(function (m) {
+        var drop = state.machines.length > 1 && isEmptyMachine(m) && incoming.indexOf(m) < 0;
+        if (drop) removed[m.id] = true;
+        return !drop;
       });
       state.activeId = incoming[0].id;
-      saveNow();
+      var saved = saveNow();
       renderAll();
+      if (!saved) { setExportMsg('기록은 화면에 불러왔지만 이 기기에 저장하지 못했습니다(저장 공간 부족 또는 저장 차단). 창을 닫기 전에 백업 파일로 다시 내려받아 두세요.', true); return; }
       setExportMsg('기계 ' + incoming.length + '대의 기록을 불러왔습니다' + (replaced ? '(같은 기록 ' + replaced + '대는 백업 내용으로 바꿈)' : '') + '.');
     };
     reader.onerror = function () { setExportMsg('파일을 여는 중 문제가 생겼습니다. 다시 시도해 주세요.', true); };
     reader.readAsText(file);
+  }
+  function findMachine(id) {
+    for (var i = 0; i < state.machines.length; i++) if (state.machines[i].id === id) return state.machines[i];
+    return null;
+  }
+  function contentOf(m) {
+    var c = normMachine(m);
+    c.createdAt = ''; c.updatedAt = '';
+    return JSON.stringify(c);
   }
   function isEmptyMachine(m) {
     var hasInfo = Object.keys(m.info).some(function (k) { return m.info[k]; });
@@ -635,6 +753,7 @@
       var m = blankMachine();
       state.machines.push(m);
       state.activeId = m.id;
+      dirty[m.id] = true;
       saveNow();
       renderAll();
       var first = $('[data-k="info.type"]');
@@ -646,6 +765,8 @@
       var label = machineLabel(m, state.machines.indexOf(m));
       if (!window.confirm('"' + label + '" 기록을 이 기기에서 지울까요? 백업 파일이 없으면 되돌릴 수 없습니다.')) return;
       state.machines = state.machines.filter(function (x) { return x.id !== m.id; });
+      removed[m.id] = true;
+      delete dirty[m.id];
       if (!state.machines.length) state.machines.push(blankMachine());
       state.activeId = state.machines[0].id;
       saveNow();
@@ -670,21 +791,61 @@
     $('#export-csv').addEventListener('click', exportCSV);
     $('#import-json').addEventListener('change', function () { importFile(this.files && this.files[0]); this.value = ''; });
     $('#clear-all').addEventListener('click', function () {
-      if (!window.confirm('이 기기에 저장된 농기계 기록을 모두 지울까요? 백업 파일이 없으면 되돌릴 수 없습니다.')) return;
-      try { window.localStorage.removeItem(KEY); } catch (e) { /* 저장소 없음 */ }
+      if (!window.confirm('이 기기에 저장된 농기계 기록을 모두 지울까요? 질문표·사고 기록표에 적은 체크와 메모도 함께 지워집니다. 백업 파일이 없으면 되돌릴 수 없습니다.')) return;
+      try {
+        var keys = [];
+        for (var i = 0; i < window.localStorage.length; i++) keys.push(window.localStorage.key(i));
+        keys.forEach(function (k) { if (k && (k.indexOf(KEY + '-') === 0 || k.indexOf('mpa-sheet-') === 0)) window.localStorage.removeItem(k); });
+      } catch (e) { /* 저장소 없음 */ }
       state = { app: APP, version: 1, activeId: '', machines: [blankMachine()], lastExportAt: '' };
       state.activeId = state.machines[0].id;
+      dirty = {};
+      removed = {};
+      lastSeen = readRaw();
       saveNow();
       renderAll();
       setExportMsg('이 기기의 기록을 모두 지웠습니다.');
     });
     window.addEventListener('beforeprint', function () { if (!$('#print-view').innerHTML || !printBlank) preparePrint(); });
-    window.addEventListener('storage', function (ev) {
-      if (ev.key !== KEY) return;
-      state = loadState();
-      renderAll();
-      setStatus('다른 창에서 바뀐 기록을 불러왔습니다.');
-    });
+    window.addEventListener('pagehide', flushSave);
+    window.addEventListener('beforeunload', flushSave);
+    document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') flushSave(); });
+    window.addEventListener('storage', onOtherWindowSave);
+  }
+  /* 다른 창(탭)이 저장했을 때: 그쪽 내용을 받되, 이 창에서 아직 저장하지 않은 기계는 이 창 내용을 지키고,
+     이 창에서 보고 있던 기계를 그대로 보여 줍니다. */
+  function onOtherWindowSave(ev) {
+    if (ev.key !== KEY && ev.key !== null) return;
+    var raw = readRaw();
+    if (raw === lastSeen) return;
+    var latest = parseState(raw);
+    if (latest === false) return;
+    var focus = focusKey(document.activeElement);
+    var caret = null;
+    try { caret = [document.activeElement.selectionStart, document.activeElement.selectionEnd]; } catch (e) { caret = null; }
+    var kept = mergeWith(latest);
+    lastSeen = raw;
+    if (kept) saveNow();
+    renderAll();
+    if (focus) {
+      var el = null;
+      try { el = document.querySelector(focus); } catch (e) { el = null; }
+      if (el && el !== document.activeElement) {
+        el.focus({ preventScroll: true });
+        try { if (caret && caret[0] !== null) el.setSelectionRange(caret[0], caret[1]); } catch (e) { /* 날짜·선택 칸 */ }
+      }
+    }
+    setStatus(kept ? '다른 창에서 바뀐 기록을 합쳐 저장했습니다.' : '다른 창에서 바뀐 기록을 불러왔습니다.');
+  }
+  function focusKey(el) {
+    if (!el || !el.getAttribute) return null;
+    var q = function (v) { return '"' + String(v).replace(/["\\]/g, '\\$&') + '"'; };
+    var simple = ['data-k', 'data-note', 'data-photo'];
+    for (var i = 0; i < simple.length; i++) if (el.getAttribute(simple[i])) return '[' + simple[i] + '=' + q(el.getAttribute(simple[i])) + ']';
+    if (el.getAttribute('data-check')) return '[data-check=' + q(el.getAttribute('data-check')) + '][value=' + q(el.value) + ']';
+    if (el.getAttribute('data-list')) return '[data-list=' + q(el.getAttribute('data-list')) + '][data-id=' + q(el.getAttribute('data-id')) + '][data-f=' + q(el.getAttribute('data-f')) + ']';
+    if (el.id) return '#' + el.id;
+    return null;
   }
   function focusLast(sel) {
     var entries = $$(sel + ' .entry');
@@ -742,6 +903,7 @@
     bind();
     renderAll();
     if (!storageOK) setStatus('이 브라우저에서는 자동 저장이 되지 않습니다(사생활 보호 모드 등). 작성 후 반드시 백업 파일로 내려받으세요.', true);
+    else if (loadNote) { setStatus(loadNote, true); setExportMsg(loadNote, true); }
     else setStatus(state.machines.length && !isEmptyMachine(current()) ? '이 기기에 저장된 기록을 불러왔습니다.' : '입력하면 이 기기에 자동 저장됩니다.');
   });
 })();
