@@ -11,7 +11,7 @@
 - `guides/farm-machinery-safety-rules/` — 농기계 안전 수칙과 작업 전 점검표.
 - `guides/used-farm-machinery-insurance-check/` — 보험 가입 전 질문표(답변 칸, 기록부로 보내기).
 - `guides/farm-machinery-incident-record/` — 사고·침수 후 기록 순서.
-- `about/`, `contact/`, `method/`(편집 원칙), `corrections/`(정정·수정 기록), `privacy/`, `terms/` — 사이트 정보. 광고 코드 없이 `google-adsense-account` 메타만 둡니다.
+- `about/`, `contact/`, `method/`(편집 원칙), `corrections/`(정정·수정 기록), `privacy/`, `terms/` — 사이트 정보.
 - `assets/site.css`, `assets/sheet.js` — 공통 스타일과 안내 페이지의 기기 저장 스크립트.
 
 외부 라이브러리나 빌드 단계 없이 GitHub Pages(main 브랜치 루트)로 그대로 배포됩니다.
@@ -23,10 +23,11 @@
 - 내용을 고치면 `corrections/`의 수정 기록에 날짜와 함께 남깁니다.
 
 ## 검사
-`node scripts/validate-site.mjs` — 사이트맵·canonical·H1·제목/설명 중복·내부 링크·JSON-LD(운영자 @id, 날짜)·꼬리말 운영자 줄과 링크·작성 정보 줄·출처 수·범위와 한계·광고 코드 위치·홈 화면 필수 고지와 상담 양식 ID를 확인합니다.
+`node scripts/validate-site.mjs` — 사이트맵·canonical·H1·제목/설명 중복·내부 링크·JSON-LD(운영자 @id, 날짜)·꼬리말 운영자 줄과 링크·작성 정보 줄·출처 수·범위와 한계·AdSense 코드와 `ads.txt`가 없는지·홈 화면 필수 고지와 상담 양식 ID를 확인합니다.
 
 ## 지켜야 할 것
 - 홈 화면 꼬리말의 보험대리점 정보, 개인정보처리방침, 필수안내사항, 심의필 번호, 저작권 줄, 상담 신청 양식(Google Form 주소와 항목 ID)은 그대로 둡니다. 테스트할 때 상담 양식을 실제로 제출하지 마세요.
 - 새 보험 상품 설명, 보험료·보장 수치, 보장 약속을 쓰지 않습니다. 공식 자료는 출처와 확인일을 함께 적습니다.
 - 확보하지 않은 현장 경험, 전문가 감수, 후기, 이용자 수를 표시하지 않습니다. 설명용 사례는 "가상 예시"로 표시합니다.
-- 인증 메타 태그, `robots.txt`의 Daum 인증 줄, `ads.txt`, 광고·분석 ID는 바꾸지 않습니다. 오류 페이지와 사이트 정보 페이지에는 광고 코드를 넣지 않습니다.
+- 인증 메타 태그, `robots.txt`의 Daum 인증 줄, 분석 ID는 바꾸지 않습니다.
+- 이 사이트는 Google AdSense에 참여하지 않습니다(2026-10-26 결정). 어느 페이지에도 AdSense 코드나 `google-adsense-account` 메타를 넣지 않고, `ads.txt`를 두지 않습니다.

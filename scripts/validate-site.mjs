@@ -8,7 +8,7 @@ const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
 const sitemap = read('sitemap.xml');
 const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
 
-// Pages with publisher content (ads allowed) and the record tool
+// Pages with publisher content and the record tool
 const contentRoutes = [
   '/',
   '/farm-assets/',
@@ -19,15 +19,15 @@ const contentRoutes = [
   '/guides/used-farm-machinery-insurance-check/',
   '/guides/farm-machinery-incident-record/'
 ];
-// Site-information pages (no ad code; verification meta only)
+// Site-information pages
 const infoRoutes = ['/about/', '/contact/', '/method/', '/corrections/', '/privacy/', '/terms/'];
 const expected = [...contentRoutes, ...infoRoutes];
 // Article and tool pages need the visible meta block, sources and scope note
 const articleRoutes = contentRoutes.filter((route) => route !== '/');
 
 const ORG_ID = 'https://jnewmedia.com/#organization';
-const ADSENSE_SCRIPT = 'pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5877883031077615';
-const ADSENSE_META = '<meta name="google-adsense-account" content="ca-pub-5877883031077615">';
+// This site does not take part in Google AdSense (decided 2026-10-26)
+const ADSENSE_PATTERN = /adsbygoogle|pagead2\.googlesyndication\.com|google-adsense-account|ca-pub-\d/i;
 const OPERATOR_LINE = '제이 미디어(Media) · 대표 이정우 · 사업자등록번호 456-33-01705 · 고객센터';
 const FOOTER_LINKS = ['/about/', '/contact/', '/method/', '/privacy/', '/terms/'];
 
@@ -76,13 +76,6 @@ for (const route of expected) {
   const footer = (html.match(/<footer class="site-footer">([\s\S]*?)<\/footer>/) || [])[1] || '';
   if (!footer.includes(OPERATOR_LINE)) errors.push(`${file}: footer missing operator line`);
   for (const link of FOOTER_LINKS) if (!footer.includes(`href="${link}"`)) errors.push(`${file}: footer missing ${link}`);
-
-  // Ad code only on content pages; verification meta on information pages
-  if (contentRoutes.includes(route) && !html.includes(ADSENSE_SCRIPT)) errors.push(`${file}: missing AdSense code`);
-  if (infoRoutes.includes(route)) {
-    if (html.includes('adsbygoogle.js')) errors.push(`${file}: information page should not load ad code`);
-    if (!html.includes(ADSENSE_META)) errors.push(`${file}: missing google-adsense-account meta`);
-  }
 
   if (articleRoutes.includes(route)) {
     const meta = (html.match(/<p class="meta-line">([\s\S]*?)<\/p>/) || [])[1] || '';
@@ -136,12 +129,21 @@ for (const notice of [
   if (!home.includes(notice)) errors.push(`Home missing required notice: ${notice}`);
 }
 
-if (read('ads.txt').trim() !== 'google.com, pub-5877883031077615, DIRECT, f08c47fec0942fa0') errors.push('ads.txt changed');
+// No AdSense anywhere: no ad script, ad slot, account meta or publisher ID in any page or script, and no ads.txt
+const walk = (dir) => fs.readdirSync(path.join(root, dir), { withFileTypes: true }).flatMap((entry) => {
+  const relative = path.join(dir, entry.name);
+  if (entry.isDirectory()) return ['.git', 'node_modules', 'dist'].includes(entry.name) ? [] : walk(relative);
+  return /\.(html|js)$/.test(entry.name) ? [relative] : [];
+});
+for (const file of walk('')) {
+  if (ADSENSE_PATTERN.test(read(file))) errors.push(`${file}: contains Google AdSense code or meta (this site does not use AdSense)`);
+}
+if (fs.existsSync(path.join(root, 'ads.txt'))) errors.push('ads.txt should not exist (this site does not use AdSense)');
 if (/^\s*Disallow:\s*\/\s*$/im.test(read('robots.txt'))) errors.push('robots.txt blocks the site');
 
 if (errors.length) {
   console.error(errors.join('\n'));
   process.exitCode = 1;
 } else {
-  console.log(`Validated ${expected.length} public routes: self canonicals, sitemap, H1s, unique titles and descriptions, JSON-LD operator and dates, footer operator line and links, meta blocks, sources and scope notes, ad-code placement, local links, record-tool links and home notices.`);
+  console.log(`Validated ${expected.length} public routes: self canonicals, sitemap, H1s, unique titles and descriptions, JSON-LD operator and dates, footer operator line and links, meta blocks, sources and scope notes, no AdSense code or ads.txt, local links, record-tool links and home notices.`);
 }
