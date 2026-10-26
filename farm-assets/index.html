@@ -71,7 +71,7 @@
   </style>
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"농기계 자산 기록부","url":"https://megapureunasset.kr/farm-assets/","applicationCategory":"UtilitiesApplication","operatingSystem":"웹 브라우저","inLanguage":"ko-KR","isAccessibleForFree":true,"description":"농기계마다 기계 정보, 인수 상태 점검, 정비 이력, 사고 기록, 보험 확인 메모를 적고 이 기기에 저장·인쇄·백업하는 기록부","publisher":{"@type":"Organization","name":"제이 미디어(Media)","url":"https://megapureunasset.kr/method/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"농기계 자산 수첩","item":"https://megapureunasset.kr/"},{"@type":"ListItem","position":2,"name":"농기계 자산 기록부","item":"https://megapureunasset.kr/farm-assets/"}]}]}</script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5877883031077615" crossorigin="anonymous"></script>
-  <script defer src="/assets/farm-record.js?v=20261026"></script>
+  <script defer src="/assets/farm-record.js?v=20261026b"></script>
 </head>
 <body>
 <a class="skip" href="#main">본문으로 건너뛰기</a>
@@ -164,6 +164,7 @@
     <section class="card" id="handover" aria-labelledby="handover-title">
       <h2 id="handover-title"><span class="sec-num">2</span>인수 상태 점검</h2>
       <p>인수하는 날 직접 본 것만 표시하세요. 시동을 걸어 보지 못했거나 작업기가 없어 확인하지 못한 항목은 "확인 못 함"으로 남기는 것이 정확합니다. 점검·정비는 엔진이 식은 뒤 평평하고 환기가 잘 되는 곳에서 하세요.</p>
+      <p class="warn">덮개를 열거나 손을 넣어 보는 점검은 시동을 끈 뒤에 하세요. 시동·PTO·유압 작동은 판매자가 조작하게 하고, 돌아가는 부위와 들어 올린 작업기 아래에서는 떨어져서 보세요.</p>
       <div class="fields">
         <label class="field"><span>점검일</span><input type="date" data-k="handover.date"></label>
         <label class="field"><span>점검 장소</span><input type="text" data-k="handover.place" maxlength="300"></label>
@@ -228,7 +229,7 @@
       <p id="export-status" class="status" role="status" aria-live="polite"></p>
       <details>
         <summary>이 기기의 기록 모두 지우기</summary>
-        <p class="small">함께 쓰는 컴퓨터라면 작업을 마친 뒤 백업 파일을 받고 기록을 지우세요.</p>
+        <p class="small">함께 쓰는 컴퓨터라면 작업을 마친 뒤 백업 파일을 받고 기록을 지우세요. 가입 전 질문표와 사고 기록표에 적은 체크·메모도 함께 지워집니다.</p>
         <button type="button" class="btn danger" id="clear-all">이 기기의 농기계 기록 모두 지우기</button>
       </details>
     </section>
@@ -249,9 +250,9 @@
     <h2 id="src-title">점검 항목의 근거와 확인일</h2>
     <ul class="sources">
       <li>농촌진흥청 보도자료 <a href="https://rda.go.kr/board/board.do?dataNo=100000809513&amp;mode=view&amp;prgId=day_farmprmninfoEntry">「농번기 안전, 농기계 자가 정비부터 ‘기종별 점검 요령은?’」</a>(2026-04-25): 배터리 단자·충전 상태, 엔진이 식은 뒤 평평하고 환기되는 곳에서 점검, 트랙터·이앙기·콤바인 기종별 점검 항목.</li>
-      <li>농촌진흥청 그린매거진 <a href="https://rda.go.kr/webzine/2025/03/sub_12.html">「안전하고 슬기로운 농촌 생활」</a>(2025년 3월, 자료: 농업인 안전 365): 사용 전 긴급정지 장치 점검, 회전부 방호 덮개, 야간 반사판·등화장치, 주정차 때 주차 브레이크.</li>
+      <li>농촌진흥청 그린매거진 <a href="https://rda.go.kr/webzine/2025/03/sub_12.html">「안전하고 슬기로운 농촌 생활」</a>(2025년 3월, 자료: 농업인 안전 365): 사용 전 긴급정지 장치 점검, 회전부 방호 덮개, 점검·수리 때 먼저 시동 끄기, 야간 반사판·등화장치, 주정차 때 주차 브레이크.</li>
       <li>농촌진흥청 그린매거진 <a href="https://www.rda.go.kr/webzine/2021/03/sub2-3.html">「경운기 사고와 안전수칙」</a>(2021년 3월): 경운기 사용 전 회전체 덮개·전선 절연·배전반 덮개 점검.</li>
-      <li>기종 목록은 <a href="https://www.nhfire.co.kr/product/retrieveProduct.nhfire?pdtCd=G610110">NH농협손해보험 농기계종합보험 상품 안내</a>에 나온 기종 이름을 참고해 고르기 쉽게 정리했습니다. 목록에 있다고 해서 가입·보장이 정해지는 것은 아닙니다.</li>
+      <li>기종 목록은 <a href="https://www.nhfire.co.kr/product/retrieveProduct.nhfire?pdtCd=G610110">NH농협손해보험 농기계종합보험 상품 안내</a>에 나온 기종 이름을 참고해 고르기 쉽게 정리했고, 기록용으로 곡물건조기를 더했습니다(곡물건조기는 그 안내의 기종 목록에 없습니다). 목록에 있다고 해서 가입·보장이 정해지는 것은 아닙니다.</li>
     </ul>
     <p class="small">자료 확인일: 2026-10-26. 점검 항목은 기록을 돕는 체크리스트이며 기계 안전 인증이나 정비 진단을 대신하지 않습니다. 기종별 정비 주기와 방법은 제조사 사용설명서를 따르세요. 작성 기준은 <a href="/method/">운영·작성 기준</a>에 있습니다.</p>
   </section>
