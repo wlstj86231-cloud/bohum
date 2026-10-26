@@ -1,27 +1,22 @@
-# 농기계 자산 수첩 랜딩페이지
+# 농기계 자산 수첩 (megapureunasset.kr)
 
-보험료 비교 및 상담 신청을 위한 고효율 랜딩페이지 프로젝트입니다.
+농기계마다 기계 정보, 인수 상태 점검, 정비·사고 이력, 보험 확인 메모를 기록하는 정적 사이트입니다. 운영: 제이 미디어(Media), 보리장터 운영사.
 
-## 기술 스택
-- **Frontend**: React 19, Vite 6, Tailwind CSS 4
-- **Backend**: Express 5 (API Server)
-- **AI**: Google Gemini API (상담 분석용)
-- **Deployment**: GitHub Pages (Frontend), Node.js (Backend)
+## 구성
+- `index.html` — 홈. 기록부 안내, 단계별 자료, 보험 상담 신청 양식과 보험대리점 필수 고지(문구 변경 금지).
+- `farm-assets/` — 농기계 자산 기록부. `assets/farm-record.js`가 브라우저 `localStorage`(`mpa-farm-record-v1`)에만 저장하고, 인쇄·JSON 백업·CSV 내보내기·백업 불러오기를 제공합니다. 서버 전송 없음.
+- `guides/farm-machinery-purchase-record/` — 중고 농기계 살 때 기록 순서.
+- `guides/used-farm-machinery-insurance-check/` — 보험 가입 전 질문표(답변 칸, 기록부로 보내기).
+- `guides/farm-machinery-incident-record/` — 사고·침수 후 기록 순서.
+- `method/` — 운영자, 저장 방식, 작성 기준, 정정 방법.
+- `assets/site.css`, `assets/sheet.js` — 공통 스타일과 안내 페이지의 기기 저장 스크립트.
 
-## 주요 기능
-- 실시간 보험료 비교 상담 신청 (Google Forms 연동)
-- 전문가 1:1 매칭 솔루션 안내
-- 개인정보 처리방침 및 필수 고지 사항 모달
-- 반응형 디자인 (Mobile First)
+외부 라이브러리나 빌드 단계 없이 GitHub Pages(main 브랜치 루트)로 그대로 배포됩니다.
 
-## 설치 및 실행
-1. 의존성 설치: `npm install`
-2. 로컬 실행: `npm run dev`
-3. 빌드: `npm run build`
+## 검사
+`node scripts/validate-site.mjs` — 사이트맵·canonical·H1·내부 링크·JSON-LD·제목 중복을 확인합니다.
 
-## 환경 변수 설정
-`.env` 파일에 다음 항목을 설정하세요:
-- `GEMINI_API_KEY`: Google Gemini API 키 (선택 사항)
-
-## 배포 안내
-이 프로젝트는 GitHub Pages 배포를 위해 최적화되어 있습니다. `gh-pages` 브랜치를 통해 배포되며, SPA 새로고침 문제를 해결하기 위한 `404.html` 리디렉션 로직이 포함되어 있습니다.
+## 지켜야 할 것
+- 홈 화면 꼬리말의 보험대리점 정보, 개인정보처리방침, 필수안내사항, 심의필 번호는 그대로 둡니다.
+- 새 보험 상품 설명, 보험료·보장 수치, 보장 약속을 쓰지 않습니다. 공식 자료는 출처와 확인일을 함께 적습니다.
+- 인증 메타 태그, `robots.txt`의 Daum 인증 줄, `ads.txt`, 광고·분석 ID는 바꾸지 않습니다.

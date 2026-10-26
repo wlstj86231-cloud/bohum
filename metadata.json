@@ -1,8 +1,5 @@
 {
-  "name": "농기계 자산 수첩 - 내 보험 바로 진단",
-  "description": "전문가 1:1 비교 분석으로 월 보험료 절감 솔루션을 제공하는 농기계 자산 수첩 보험 진단 랜딩페이지입니다.",
-  "requestFramePermissions": [
-    "camera",
-    "microphone"
-  ]
+  "name": "농기계 자산 수첩",
+  "description": "농기계마다 기계 정보, 인수 상태 점검, 정비·사고 이력, 보험 확인 메모를 브라우저에 기록하고 인쇄·백업하는 정적 사이트입니다.",
+  "requestFramePermissions": []
 }
